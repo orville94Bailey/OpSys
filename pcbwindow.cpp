@@ -18,6 +18,9 @@ pcbWindow::pcbWindow(QWidget *parent) :
     priorityButton = ui->priorityButton;
     pcbShowButton = ui->pcbShower;
     quitButton = ui->quitButton;
+    showAllButton = ui->showAll;
+    showBlockedButton = ui->showBlocked;
+    showReadyButton = ui->showReady;
 
     //line edit to pointer
     nameLEdit = ui->nameLEdit;
@@ -34,6 +37,8 @@ pcbWindow::pcbWindow(QWidget *parent) :
     connect(priorityButton,SIGNAL(clicked()),this,SLOT(setPriority()));
     connect(pcbShowButton,SIGNAL(clicked()),this,SLOT(showPCBList()));
     connect(quitButton,SIGNAL(clicked()),this,SLOT(hide()));
+    connect(priorityButton,SIGNAL(clicked()),this,SLOT(setPriority()));
+    connect(showAllButton,SIGNAL(clicked()),this,SLOT(showAllPCB()));
 }
 
 pcbWindow::~pcbWindow()
@@ -51,11 +56,15 @@ pcbWindow::~pcbWindow()
     delete classLEdit;
     delete prioritySBox;
     delete quitButton;
+
+    delete showAllButton;
+    delete showBlockedButton;
+    delete showReadyButton;
 }
 
 void pcbWindow::showPCBList()
 {
-    showWindow.show();
+    //showWindow.show();
 
       showWindow.updateDisplay(control.findPCB(nameLEdit->text().toStdString()));
       showWindow.show();
@@ -197,4 +206,19 @@ bool pcbWindow::setPriority()
         return true;
     }
     return false;
+}
+
+void pcbWindow::showAllPCB()
+{
+
+}
+
+void pcbWindow::showBlockedPCB()
+{
+
+}
+
+void pcbWindow::showReadyPCB()
+{
+
 }

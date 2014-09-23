@@ -215,7 +215,7 @@
     <string>Show PCB</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_6">
+  <widget class="QPushButton" name="showReady">
    <property name="geometry">
     <rect>
      <x>300</x>
@@ -225,10 +225,10 @@
     </rect>
    </property>
    <property name="text">
-    <string>PushButton</string>
+    <string>Show Ready</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_7">
+  <widget class="QPushButton" name="showBlocked">
    <property name="geometry">
     <rect>
      <x>300</x>
@@ -238,7 +238,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>PushButton</string>
+    <string>Show Blocked</string>
    </property>
   </widget>
   <widget class="QPushButton" name="blockButton">
@@ -307,6 +307,19 @@
    </property>
    <property name="text">
     <string>Close</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="showAll">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>170</y>
+     <width>71</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Show All</string>
    </property>
   </widget>
  </widget>

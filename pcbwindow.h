@@ -34,7 +34,9 @@ private:
                 *nameLEdit,
                 *stateLEdit,
                 *reqMemLEdit;
+
     QCheckBox   *suspendCBox;
+
     QPushButton *createButton,
                 *deleteButton,
                 *blockButton,
@@ -43,13 +45,19 @@ private:
                 *resumeButton,
                 *priorityButton,
                 *pcbShowButton,
-                *quitButton;
+                *quitButton,
+                *showAllButton,
+                *showBlockedButton,
+                *showReadyButton;
     QSpinBox    *prioritySBox;
     pcbShower showWindow;
 
 private slots:
-    void showPCBList();
-    bool setPriority();
+    void showPCBList();//done
+    bool setPriority();//done
+    void showAllPCB();
+    void showReadyPCB();
+    void showBlockedPCB();
     void createPCB();//done
     bool deletePCB();//done
     bool block();//done
