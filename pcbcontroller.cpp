@@ -9,7 +9,7 @@ PCB* PCBController::allocatePCB()
 {
     PCB* holder;
     holder=new PCB;
-    qDebug()<<"allocatePCB running";
+    //qDebug()<<"allocatePCB running";
     return holder;
 }
 
@@ -34,15 +34,15 @@ PCB* PCBController::findPCB(std::string name)
     PCB* holder;
     holder = readyList.firstNode;
 
-    qDebug()<<holder;
+    //qDebug()<<holder;
 
     if(holder == NULL)
     {
-        qDebug()<<"ready list is empty";
+        //qDebug()<<"ready list is empty";
         holder = blockedList.firstNode;
         if(holder == NULL)
         {
-            qDebug()<<"blocked list is empty";
+            //qDebug()<<"blocked list is empty";
             //qDebug()<<"NULL";
             return NULL;
         }
@@ -55,25 +55,25 @@ PCB* PCBController::findPCB(std::string name)
             }
             else
             {
-                qDebug()<<holder;
+                //qDebug()<<holder;
                 return holder;
             }
         }
-        qDebug()<<"NULL";
+        //qDebug()<<"NULL";
         return NULL;
 
     }
 
     do
     {
-        qDebug()<<"ready list is not empty";
+        //qDebug()<<"ready list is not empty";
         if(holder->getName()!=name)
         {
             holder = holder->nextPCB;
         }
         else
         {
-            qDebug()<<holder;
+            //qDebug()<<holder;
             return holder;
         }
     }while(holder->nextPCB!=NULL);
@@ -81,7 +81,7 @@ PCB* PCBController::findPCB(std::string name)
     holder = blockedList.firstNode;
     if(holder == NULL)
     {
-        qDebug()<<"blocked list is empty";
+        //qDebug()<<"blocked list is empty";
         //qDebug()<<"NULL";
         return NULL;
     }
@@ -93,11 +93,11 @@ PCB* PCBController::findPCB(std::string name)
         }
         else
         {
-            qDebug()<<holder;
+            //qDebug()<<holder;
             return holder;
         }
     }while(holder->nextPCB!=NULL);
-    qDebug()<<"NULL";
+    //qDebug()<<"NULL";
     return NULL;
 }
 
@@ -111,15 +111,15 @@ void PCBController::freePCB(PCB* nodeToKill)
 
 bool PCBController::insertPCB(PCB *nodeToInsert)
 {
-    qDebug()<<"before the switch";
+    //qDebug()<<"before the switch";
     switch(nodeToInsert->getState())
     {
     case READY:
 
     case SUSPENDEDREADY:
-        qDebug()<<"before pushing";
+        //qDebug()<<"before pushing";
         readyList.push(nodeToInsert);
-        qDebug()<<"after pushing";
+        //qDebug()<<"after pushing";
         return true;
         break;
 
@@ -134,7 +134,7 @@ bool PCBController::insertPCB(PCB *nodeToInsert)
         return false;
         break;
     }
-    qDebug()<<"after the switch";
+    //qDebug()<<"after the switch";
 }
 
 PCB* PCBController::RemovePCB(PCB* nodeToRemove)
