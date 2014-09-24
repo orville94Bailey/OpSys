@@ -1,5 +1,6 @@
 #include "pcbshower.h"
 #include "ui_pcbshower.h"
+#include <QDebug>
 
 pcbShower::pcbShower(QWidget *parent) :
     QDialog(parent),
@@ -39,7 +40,7 @@ void pcbShower::updateDisplay(PCB* toShow)
             priorityString;
 
 
-
+    qDebug()<<toShow;
     if(toShow!=NULL)
     {
         nameString = QString::fromStdString(toShow->getName());

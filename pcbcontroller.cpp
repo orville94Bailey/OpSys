@@ -24,21 +24,26 @@ PCB* PCBController::setupPCB(std::string name, int priority, PCBState state)
         holder->setPriority(priority);
         holder->setState(state);
     }
-    qDebug()<<"setupPCB returned successfully";
+    //qDebug()<<"setupPCB returned successfully";
     return holder;
 }
 
 PCB* PCBController::findPCB(std::string name)
 {
-    qDebug()<<"findPCB running to find ";
+    //qDebug()<<"findPCB running to find ";
     PCB* holder;
     holder = readyList.firstNode;
 
+    qDebug()<<holder;
+
     if(holder == NULL)
     {
+        qDebug()<<"ready list is empty";
         holder = blockedList.firstNode;
         if(holder == NULL)
         {
+            qDebug()<<"blocked list is empty";
+            //qDebug()<<"NULL";
             return NULL;
         }
 
@@ -49,36 +54,50 @@ PCB* PCBController::findPCB(std::string name)
                 holder = holder->nextPCB;
             }
             else
+            {
+                qDebug()<<holder;
                 return holder;
+            }
         }
+        qDebug()<<"NULL";
         return NULL;
 
     }
-    while(holder->nextPCB!=NULL)
+
+    do
     {
+        qDebug()<<"ready list is not empty";
         if(holder->getName()!=name)
         {
             holder = holder->nextPCB;
         }
         else
+        {
+            qDebug()<<holder;
             return holder;
-    }
+        }
+    }while(holder->nextPCB!=NULL);
 
     holder = blockedList.firstNode;
     if(holder == NULL)
     {
+        qDebug()<<"blocked list is empty";
+        //qDebug()<<"NULL";
         return NULL;
     }
-    while(holder->nextPCB!=NULL)
+    do
     {
         if(holder->getName()!=name)
         {
             holder = holder->nextPCB;
         }
         else
+        {
+            qDebug()<<holder;
             return holder;
-    }
-
+        }
+    }while(holder->nextPCB!=NULL);
+    qDebug()<<"NULL";
     return NULL;
 }
 

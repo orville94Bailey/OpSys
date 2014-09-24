@@ -64,7 +64,7 @@ pcbWindow::~pcbWindow()
 
 void pcbWindow::showPCBList()
 {
-    //showWindow.show();
+    showWindow.show();
 
       showWindow.updateDisplay(control.findPCB(nameLEdit->text().toStdString()));
       showWindow.show();
@@ -79,7 +79,7 @@ void pcbWindow::createPCB()
         {
             //<<"before insert";
             control.insertPCB(control.setupPCB(nameLEdit->text().toStdString(),prioritySBox->value(),READY));
-            //<<"after insert";
+            //qDebug()<<"after insert";
         }
     }
 }
