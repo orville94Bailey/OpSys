@@ -79,9 +79,8 @@ bool PCBController::insertPCB(PCB *nodeToInsert)
     //qDebug()<<"after the switch";
 }
 
-PCB* PCBController::RemovePCB(PCB* nodeToRemove)
+void PCBController::RemovePCB(PCB* nodeToRemove)
 {
-    nodeToRemove->nextPCB->prevPCB=nodeToRemove->prevPCB;
-    nodeToRemove->prevPCB->nextPCB=nodeToRemove->nextPCB;
-    return nodeToRemove;
+    readyList.removePCB(nodeToRemove);
+    blockedList.removePCB(nodeToRemove);
 }

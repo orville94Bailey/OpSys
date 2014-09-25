@@ -46,7 +46,6 @@ private:
                 *priorityButton,
                 *pcbShowButton,
                 *quitButton,
-                *showAllButton,
                 *showBlockedButton,
                 *showReadyButton;
     QSpinBox    *prioritySBox;
@@ -55,7 +54,6 @@ private:
 private slots:
     void showPCBList();//done
     bool setPriority();//done
-    void showAllPCB();
     void showReadyPCB();
     void showBlockedPCB();
     void createPCB();//done

@@ -12,7 +12,7 @@ public:
     PCB* findPCB(std::string name);//done
     void freePCB(PCB*nodeToKill);//done
     bool insertPCB(PCB*nodeToInsert);//done
-    PCB *RemovePCB(PCB*nodeToRemove);//done
+    void RemovePCB(PCB*nodeToRemove);//done
 
     PCBList readyList,blockedList;
 };

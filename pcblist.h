@@ -11,6 +11,7 @@ public:
     PCB* pop();
     int listLength();
     PCB* findPCB(std::string);
+    void removePCB(PCB*nodeToRemove);
     PCB *firstNode,*lastNode;
     //User Commands
 

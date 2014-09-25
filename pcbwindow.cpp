@@ -18,7 +18,6 @@ pcbWindow::pcbWindow(QWidget *parent) :
     priorityButton = ui->priorityButton;
     pcbShowButton = ui->pcbShower;
     quitButton = ui->quitButton;
-    showAllButton = ui->showAll;
     showBlockedButton = ui->showBlocked;
     showReadyButton = ui->showReady;
 
@@ -38,7 +37,8 @@ pcbWindow::pcbWindow(QWidget *parent) :
     connect(pcbShowButton,SIGNAL(clicked()),this,SLOT(showPCBList()));
     connect(quitButton,SIGNAL(clicked()),this,SLOT(hide()));
     connect(priorityButton,SIGNAL(clicked()),this,SLOT(setPriority()));
-    connect(showAllButton,SIGNAL(clicked()),this,SLOT(showAllPCB()));
+    connect(showBlockedButton,SIGNAL(clicked()),this,SLOT(showBlockedPCB()));
+    connect(showReadyButton,SIGNAL(clicked()),this,SLOT(showReadyPCB()));
 }
 
 pcbWindow::~pcbWindow()
@@ -57,14 +57,13 @@ pcbWindow::~pcbWindow()
     delete prioritySBox;
     delete quitButton;
 
-    delete showAllButton;
     delete showBlockedButton;
     delete showReadyButton;
 }
 
 void pcbWindow::showPCBList()
 {
-    showWindow.show();
+    //showWindow.show();
 
       showWindow.updateDisplay(control.findPCB(nameLEdit->text().toStdString()));
       showWindow.show();
@@ -107,10 +106,13 @@ bool pcbWindow::block()
     {
         if(toBlock->getState()==READY || toBlock->getState()==SUSPENDEDREADY)
         {
+            qDebug()<<toBlock->getState();
             control.RemovePCB(toBlock);
             if(toBlock->getState()==READY)
             {
+                qDebug()<<"attempting block";
                 toBlock->setState(BLOCKED);
+                qDebug()<<"now blocked";
             }
             if(toBlock->getState()==SUSPENDEDREADY)
             {
@@ -209,17 +211,16 @@ bool pcbWindow::setPriority()
     return false;
 }
 
-void pcbWindow::showAllPCB()
-{
-
-}
-
 void pcbWindow::showBlockedPCB()
 {
-
+    showWindow.show();
+    showWindow.updateDisplay(control.blockedList.firstNode);
+    showWindow.show();
 }
 
 void pcbWindow::showReadyPCB()
 {
-
+    showWindow.show();
+    showWindow.updateDisplay(control.readyList.firstNode);
+    showWindow.show();
 }

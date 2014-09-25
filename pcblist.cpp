@@ -68,3 +68,33 @@ PCB* PCBList::findPCB(std::string nameSearch)
     //qDebug()<<holder;
     return NULL;
 }
+
+void PCBList::removePCB(PCB* nodeToRemove)
+{
+    if(nodeToRemove->nextPCB!=NULL && nodeToRemove->prevPCB!=NULL)//NODE BEFORE AND AFTER
+    {
+        nodeToRemove->nextPCB->prevPCB=nodeToRemove->prevPCB;
+        nodeToRemove->prevPCB->nextPCB=nodeToRemove->nextPCB;
+        nodeToRemove->nextPCB=NULL;
+        nodeToRemove->prevPCB=NULL;
+    }
+    else if(nodeToRemove->nextPCB==NULL && nodeToRemove->prevPCB!=NULL)//NODE BEFORE NOT AFTER
+    {
+        nodeToRemove->prevPCB->nextPCB=NULL;
+        nodeToRemove->nextPCB=NULL;
+        nodeToRemove->prevPCB=NULL;
+    }
+    else if(nodeToRemove->nextPCB!=NULL && nodeToRemove->prevPCB==NULL)//NODE AFTER NOT BEFORE
+    {
+        firstNode = nodeToRemove->nextPCB;
+        nodeToRemove->nextPCB=NULL;
+        nodeToRemove->prevPCB=NULL;
+        firstNode->prevPCB = NULL;
+    }
+    else if(nodeToRemove->nextPCB==NULL && nodeToRemove->prevPCB==NULL)//NO NODE BEFORE AND AFTER
+    {
+        nodeToRemove->nextPCB=NULL;
+        nodeToRemove->prevPCB=NULL;
+        firstNode = NULL;
+    }
+}
