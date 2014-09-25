@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     pcblist.cpp \
     pcbwindow.cpp \
     pcbcontroller.cpp \
-    pcbshower.cpp
+    pcbshower.cpp \
+    processschedulers.cpp
 
 HEADERS  += mainwindow.h \
     quitwindow.h \
@@ -34,7 +35,8 @@ HEADERS  += mainwindow.h \
     pcblist.h \
     pcbwindow.h \
     pcbcontroller.h \
-    pcbshower.h
+    pcbshower.h \
+    processschedulers.h
 
 FORMS    += mainwindow.ui \
     quitwindow.ui \
@@ -42,4 +44,5 @@ FORMS    += mainwindow.ui \
     directorywindow.ui \
     helpwindow.ui \
     pcbwindow.ui \
-    pcbshower.ui
+    pcbshower.ui \
+    processschedulers.ui

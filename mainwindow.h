@@ -9,6 +9,7 @@
 #include "directorywindow.h"
 #include "helpwindow.h"
 #include "pcbwindow.h"
+#include "processschedulers.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,21 +34,25 @@ private slots:
     void directoryClicked();
 
     void pcbToolsClicked();
+
+    void schedulerButtonClicked();
     
 private:
     Ui::MainWindow *ui;
-    QPushButton *dateDisplayButton;
-    QPushButton *directoryDisplayButton;
-    QPushButton *helpButton;
+    QPushButton *dateDisplayButton,
+                *directoryDisplayButton,
+                *helpButton,
+                *quitButton,
+                *pcbToolButton,
+                *schedulerButton;
     QLineEdit *helpLineEdit;
-    QPushButton *quitButton;
-    QPushButton *pcbToolButton;
 
     quitWindow exitWindow;
     dateWindow dateShower;
     directoryWindow directoryShower;
     //helpWindow helpShower;
     pcbWindow pcbTools;
+    processSchedulers schedulerWindow;
 
 
 };
