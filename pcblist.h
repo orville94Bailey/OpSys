@@ -10,6 +10,7 @@ public:
     void push(PCB*);
     PCB* pop();
     int listLength();
+    PCB* findPCB(std::string);
     PCB *firstNode,*lastNode;
     //User Commands
 

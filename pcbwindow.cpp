@@ -72,14 +72,15 @@ void pcbWindow::showPCBList()
 
 void pcbWindow::createPCB()
 {
-    //<<"createPCB started";
+    qDebug()<<"createPCB started";
     if(control.findPCB(nameLEdit->text().toStdString())==NULL)
     {
+        qDebug()<<"findPCB is ok";
         if(classLEdit->text().toStdString()=="APPLICATION" || classLEdit->text().toStdString()=="SYSTEM")
         {
             //<<"before insert";
             control.insertPCB(control.setupPCB(nameLEdit->text().toStdString(),prioritySBox->value(),READY));
-            //qDebug()<<"after insert";
+            qDebug()<<"after insert";
         }
     }
 }

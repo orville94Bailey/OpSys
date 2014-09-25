@@ -1,5 +1,5 @@
 #include "pcblist.h"
-
+#include <QDebug>
 PCBList::PCBList()
 {
     firstNode = NULL;
@@ -47,4 +47,24 @@ PCB* PCBList::pop()
     firstNode->prevPCB=NULL;
 
     return holder;
+}
+
+PCB* PCBList::findPCB(std::string nameSearch)
+{
+    PCB* holder;
+    holder = firstNode;
+
+    while(holder!=NULL)
+    {
+        //qDebug()<<"inside while";
+        if(holder->getName()==nameSearch)
+        {
+            //qDebug()<<"inside if";
+            //qDebug()<<holder;
+            return holder;
+        }
+        holder = holder->nextPCB;
+    }
+    //qDebug()<<holder;
+    return NULL;
 }

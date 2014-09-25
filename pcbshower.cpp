@@ -40,14 +40,15 @@ void pcbShower::updateDisplay(PCB* toShow)
             priorityString;
 
 
-    qDebug()<<toShow;
+    qDebug()<<"PROBLEM TOSHOW == NULL";
     if(toShow!=NULL)
     {
         nameString = QString::fromStdString(toShow->getName());
         priorityString = QString::number(toShow->getPriority());
-        priorityText->setText(priorityString);
 
+        priorityText->setText(priorityString);
         nameText->setText(nameString);
+
         switch(toShow->getPCBClass())
         {
         case APPLICATION:
@@ -78,7 +79,10 @@ void pcbShower::updateDisplay(PCB* toShow)
             stateText->setText("Problem Occured Setting Text");
 
         }
+        qDebug()<<"these numbers should be ==";
+        qDebug()<<toShow;
         currentNode = toShow;
+        qDebug()<<currentNode;
 
     }
 }
