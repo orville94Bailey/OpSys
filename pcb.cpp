@@ -55,3 +55,33 @@ void PCB::setClass(PCBType type)
 {
     PCBClass = type;
 }
+
+int PCB::getPercentCPU()
+{
+    return percentCPU;
+}
+
+int PCB::getTimeOfArrival()
+{
+    return timeOfArrival;
+}
+
+int PCB::getTimeRemaining()
+{
+    return timeRemaining;
+}
+
+void PCB::setPercentCPU(int newPercent)
+{
+    percentCPU = newPercent;
+}
+
+void PCB::setTimeOfArrival(int TOA)
+{
+    timeOfArrival = TOA;
+}
+
+void PCB::setTimeRemaining(int timeLeft)
+{
+    timeRemaining = timeLeft;
+}
