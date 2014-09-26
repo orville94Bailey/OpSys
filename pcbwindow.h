@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include "pcbshower.h"
+#include "processschedulers.h"
 
 namespace Ui {
 class pcbWindow;
@@ -50,6 +51,7 @@ private:
                 *showReadyButton;
     QSpinBox    *prioritySBox;
     pcbShower showWindow;
+    processSchedulers scheduler;
 
 private slots:
     void showPCBList();//done

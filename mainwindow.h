@@ -34,8 +34,6 @@ private slots:
     void directoryClicked();
 
     void pcbToolsClicked();
-
-    void schedulerButtonClicked();
     
 private:
     Ui::MainWindow *ui;
@@ -43,8 +41,7 @@ private:
                 *directoryDisplayButton,
                 *helpButton,
                 *quitButton,
-                *pcbToolButton,
-                *schedulerButton;
+                *pcbToolButton;
     QLineEdit *helpLineEdit;
 
     quitWindow exitWindow;
@@ -52,9 +49,6 @@ private:
     directoryWindow directoryShower;
     //helpWindow helpShower;
     pcbWindow pcbTools;
-    processSchedulers schedulerWindow;
-
-
 };
 
 #endif // MAINWINDOW_H

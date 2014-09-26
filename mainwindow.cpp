@@ -14,14 +14,12 @@ MainWindow::MainWindow(QWidget *parent) :
     helpLineEdit = ui->lineEdit;
     quitButton = ui->quitButton;
     pcbToolButton = ui->pcbToolButton;
-    schedulerButton = ui->processToolButton;
 
     connect(quitButton, SIGNAL(clicked()), this, SLOT(quitClicked()));
     connect(dateDisplayButton, SIGNAL(clicked()), this, SLOT(dateClicked()));
     connect(helpButton, SIGNAL(clicked()), this, SLOT(helpClicked()));
     connect(directoryDisplayButton, SIGNAL(clicked()), this, SLOT(directoryClicked()));
     connect(pcbToolButton,SIGNAL(clicked()),this,SLOT(pcbToolsClicked()));
-    connect(schedulerButton,SIGNAL(clicked()),this,SLOT(schedulerButtonClicked()));
 
 }
 
@@ -33,7 +31,6 @@ MainWindow::~MainWindow()
     delete helpButton;
     delete helpLineEdit;
     delete quitButton;
-    delete schedulerButton;
 
 }
 
@@ -60,9 +57,4 @@ void MainWindow::helpClicked()
 void MainWindow::pcbToolsClicked()
 {
     pcbTools.show();
-}
-
-void MainWindow::schedulerButtonClicked()
-{
-    schedulerWindow.show();
 }
