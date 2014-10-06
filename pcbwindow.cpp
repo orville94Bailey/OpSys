@@ -9,10 +9,10 @@ pcbWindow::pcbWindow(QWidget *parent) :
     ui->setupUi(this);
 
     //button to pointer
-    createButton = ui->createButton;
-    deleteButton = ui->deleteButton;
-    blockButton = ui->blockButton;
-    unblockButton = ui->unblockButton;
+    //createButton = ui->createButton;
+    //deleteButton = ui->deleteButton;
+    //blockButton = ui->blockButton;
+    //unblockButton = ui->unblockButton;
     suspendButton = ui->suspendButton;
     resumeButton = ui->resumeButton;
     priorityButton = ui->priorityButton;
@@ -27,10 +27,10 @@ pcbWindow::pcbWindow(QWidget *parent) :
     prioritySBox = ui->prioritySBox;
 
     //connecting buttons to function calls
-    connect(createButton, SIGNAL(clicked()),this,SLOT(createPCB()));
-    connect(deleteButton, SIGNAL(clicked()),this,SLOT(deletePCB()));
-    connect(blockButton, SIGNAL(clicked()),this,SLOT(block()));
-    connect(unblockButton,SIGNAL(clicked()),this,SLOT(unblock()));
+    //connect(createButton, SIGNAL(clicked()),this,SLOT(createPCB()));
+    //connect(deleteButton, SIGNAL(clicked()),this,SLOT(deletePCB()));
+    //connect(blockButton, SIGNAL(clicked()),this,SLOT(block()));
+    //connect(unblockButton,SIGNAL(clicked()),this,SLOT(unblock()));
     connect(suspendButton,SIGNAL(clicked()),this,SLOT(suspend()));
     connect(resumeButton, SIGNAL(clicked()),this,SLOT(resume()));
     connect(priorityButton,SIGNAL(clicked()),this,SLOT(setPriority()));
@@ -44,10 +44,10 @@ pcbWindow::pcbWindow(QWidget *parent) :
 pcbWindow::~pcbWindow()
 {
     delete ui;
-    delete createButton;
-    delete deleteButton;
-    delete blockButton;
-    delete unblockButton;
+    //delete createButton;
+    //delete deleteButton;
+    //delete blockButton;
+    //delete unblockButton;
     delete suspendButton;
     delete resumeButton;
     delete priorityButton;

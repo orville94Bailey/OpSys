@@ -150,32 +150,6 @@
     <string/>
    </property>
   </widget>
-  <widget class="QPushButton" name="deleteButton">
-   <property name="geometry">
-    <rect>
-     <x>300</x>
-     <y>20</y>
-     <width>80</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Delete</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="unblockButton">
-   <property name="geometry">
-    <rect>
-     <x>300</x>
-     <y>50</y>
-     <width>81</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Unblock</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="resumeButton">
    <property name="geometry">
     <rect>
@@ -241,19 +215,6 @@
     <string>Show Blocked</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="blockButton">
-   <property name="geometry">
-    <rect>
-     <x>220</x>
-     <y>50</y>
-     <width>71</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Block</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="suspendButton">
    <property name="geometry">
     <rect>
@@ -265,19 +226,6 @@
    </property>
    <property name="text">
     <string>Suspend</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="createButton">
-   <property name="geometry">
-    <rect>
-     <x>220</x>
-     <y>20</y>
-     <width>71</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Create</string>
    </property>
   </widget>
   <widget class="QSpinBox" name="prioritySBox">

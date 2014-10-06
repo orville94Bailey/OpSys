@@ -38,10 +38,10 @@ private:
 
     QCheckBox   *suspendCBox;
 
-    QPushButton *createButton,
-                *deleteButton,
-                *blockButton,
-                *unblockButton,
+    QPushButton //*createButton,
+                //*deleteButton,
+                //*blockButton,
+                //*unblockButton,
                 *suspendButton,
                 *resumeButton,
                 *priorityButton,
