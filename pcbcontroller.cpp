@@ -13,15 +13,27 @@ PCB* PCBController::allocatePCB()
     return holder;
 }
 
-PCB* PCBController::setupPCB(std::string name, int priority, PCBState state)
+PCB* PCBController::setupPCB(QString processName,QString pcbClass, int priority,int memory,int timeRemaining,int timeOfArrival,int cpuPercent)
 {
     PCB* holder;
-    if(findPCB(name)==NULL)
+    if(findPCB(processName)==NULL)
     {
         holder = allocatePCB();
-        //qDebug()<<"allocatePCB returned succesfully";
-        holder->setName(name);
+
+        holder->setName(processName);
+        if(pcbClass == 'A')
+        {
+            holder->setClass(APPLICATION);
+        }
+        else
+        {
+            holder->setClass(SYSTEM);
+        }
         holder->setPriority(priority);
+        holder->setMem(memory);
+        holder->setTimeRemaining(timeRemaining);
+        holder->setTimeOfArrival(timeOfArrival);
+        holder->setPercentCPU(cpuPercent);
         holder->setState(state);
     }
     //qDebug()<<"setupPCB returned successfully";
@@ -83,4 +95,30 @@ void PCBController::RemovePCB(PCB* nodeToRemove)
 {
     readyList.removePCB(nodeToRemove);
     blockedList.removePCB(nodeToRemove);
+}
+
+void PCBController::readFile(QString fileName)
+{
+    QString processName,
+            pcbClass;
+    int priority,
+        memory,
+        timeRemaining,
+        timeOfArrival,
+        cpuPercent;
+    QFile toOpen("fileName");
+    if(!toOpen.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        return;
+    }
+    QTextStream toRead(&toOpen);
+
+    toRead>>processName;
+    toRead>>pcbClass;
+    toRead>>priority;
+    toRead>>memory;
+    toRead>>timeRemaining;
+    toRead>>timeOfArrival;
+    toRead>>cpuPercent;
+    pcbCreate
 }

@@ -48,7 +48,8 @@ private:
                 *quitButton,
                 *showBlockedButton,
                 *showReadyButton;
-    QSpinBox    *prioritySBox;
+    QSpinBox    *prioritySBox,
+                *timeRemainingSBox;
     pcbShower showWindow;
 
 private slots:
