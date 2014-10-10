@@ -1,14 +1,15 @@
 #ifndef PCB_H
 #define PCB_H
 
-#include <string>
+#include <QString>
 #include "enums.h"
+
 
 class PCB
 {
 public:
     PCB();
-    void setName(std::string);
+    void setName(QString);
     void setState(PCBState);
     void setPriority(int);
     void setMem(int);
@@ -17,7 +18,7 @@ public:
     void setTimeOfArrival(int);
     void setPercentCPU(int);
 
-    std::string getName();
+    QString getName();
     PCBState getState();
     int getPriority();
     int getMem();
@@ -29,7 +30,7 @@ public:
     PCB *nextPCB,*prevPCB;
 
 private:
-    std::string processName;
+    QString processName;
     PCBState state;
     int priorityLevel;
     int memRequired;

@@ -10,7 +10,7 @@ public:
     void push(PCB*);
     PCB* pop();
     int listLength();
-    PCB* findPCB(std::string);
+    PCB* findPCB(QString);
     void removePCB(PCB*nodeToRemove);
     PCB *firstNode,*lastNode;
     //User Commands

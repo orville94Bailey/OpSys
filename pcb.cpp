@@ -11,7 +11,7 @@ void PCB::setMem(int mem)
     memRequired = mem;
 }
 
-void PCB::setName(std::string name)
+void PCB::setName(QString name)
 {
     processName = name;
 }
@@ -26,7 +26,7 @@ void PCB::setState(PCBState newState)
     state = newState;
 }
 
-std::string PCB::getName()
+QString PCB::getName()
 {
     return processName;
 }

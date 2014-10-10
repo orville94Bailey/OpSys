@@ -33,7 +33,8 @@ private:
     QLineEdit   *classLEdit,
                 *nameLEdit,
                 *stateLEdit,
-                *reqMemLEdit;
+                *reqMemLEdit,
+                *fileNameLEdit;
 
     QCheckBox   *suspendCBox;
 
@@ -47,8 +48,10 @@ private:
                 *pcbShowButton,
                 *quitButton,
                 *showBlockedButton,
-                *showReadyButton;
-    QSpinBox    *prioritySBox;
+                *showReadyButton,
+                *readFileButton;
+    QSpinBox    *prioritySBox,
+                *timeRemainingSBox;
     pcbShower showWindow;
 
 private slots:
@@ -62,6 +65,7 @@ private slots:
     bool unblock();//done
     bool suspend();//done
     bool resume();//done
+    void readFile();
 };
 
 #endif // PCBWINDOW_H

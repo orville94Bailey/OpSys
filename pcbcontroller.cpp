@@ -1,5 +1,7 @@
 #include "pcbcontroller.h"
 #include <QtDebug>
+#include <QFile>
+#include <QCoreApplication>
 
 PCBController::PCBController()
 {
@@ -21,7 +23,7 @@ PCB* PCBController::setupPCB(QString processName,QString pcbClass, int priority,
         holder = allocatePCB();
 
         holder->setName(processName);
-        if(pcbClass == 'A')
+        if(pcbClass[0] == 'A')
         {
             holder->setClass(APPLICATION);
         }
@@ -34,13 +36,13 @@ PCB* PCBController::setupPCB(QString processName,QString pcbClass, int priority,
         holder->setTimeRemaining(timeRemaining);
         holder->setTimeOfArrival(timeOfArrival);
         holder->setPercentCPU(cpuPercent);
-        holder->setState(state);
+        holder->setState(BLOCKED);
     }
     //qDebug()<<"setupPCB returned successfully";
     return holder;
 }
 
-PCB* PCBController::findPCB(std::string name)
+PCB* PCBController::findPCB(QString name)
 {
     PCB* holder=NULL;
     holder = readyList.findPCB(name);
@@ -101,24 +103,43 @@ void PCBController::readFile(QString fileName)
 {
     QString processName,
             pcbClass;
+
     int priority,
         memory,
         timeRemaining,
         timeOfArrival,
         cpuPercent;
-    QFile toOpen("fileName");
-    if(!toOpen.open(QIODevice::ReadOnly | QIODevice::Text))
+
+    QFile toOpen(QCoreApplication::applicationDirPath()+"\\"+fileName);
+    if(toOpen.exists())
     {
+        if(!toOpen.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            qDebug()<<toOpen.error();
+            return;
+        }
+        QTextStream toRead(&toOpen);
+        int i = 0;
+        while (!toRead.atEnd())
+        {
+            qDebug()<<i<<"\'th iteration";
+            toRead>>processName;
+            toRead>>pcbClass;
+            toRead>>priority;
+            toRead>>memory;
+            toRead>>timeRemaining;
+            toRead>>timeOfArrival;
+            toRead>>cpuPercent;
+            insertPCB(setupPCB(processName,pcbClass,priority,memory,timeRemaining,timeOfArrival,cpuPercent));
+            qDebug()<<"pcb created";
+            i++;
+        }
+        toOpen.close();
+    }
+    else
+    {
+        qDebug()<<"File DNE";
+        qDebug()<<QCoreApplication::applicationDirPath();
         return;
     }
-    QTextStream toRead(&toOpen);
-
-    toRead>>processName;
-    toRead>>pcbClass;
-    toRead>>priority;
-    toRead>>memory;
-    toRead>>timeRemaining;
-    toRead>>timeOfArrival;
-    toRead>>cpuPercent;
-    pcbCreate
 }

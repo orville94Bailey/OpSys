@@ -49,7 +49,7 @@ PCB* PCBList::pop()
     return holder;
 }
 
-PCB* PCBList::findPCB(std::string nameSearch)
+PCB* PCBList::findPCB(QString nameSearch)
 {
     PCB* holder;
     holder = firstNode;

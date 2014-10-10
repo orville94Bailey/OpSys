@@ -35,19 +35,14 @@ pcbShower::~pcbShower()
 
 void pcbShower::updateDisplay(PCB* toShow)
 {
-    QString nameString,
-            classString,
-            priorityString;
+    QString priorityString;
 
-
-    qDebug()<<"PROBLEM TOSHOW == NULL";
     if(toShow!=NULL)
     {
-        nameString = QString::fromStdString(toShow->getName());
         priorityString = QString::number(toShow->getPriority());
 
         priorityText->setText(priorityString);
-        nameText->setText(nameString);
+        nameText->setText(toShow->getName());
 
         switch(toShow->getPCBClass())
         {
@@ -79,20 +74,21 @@ void pcbShower::updateDisplay(PCB* toShow)
             stateText->setText("Problem Occured Setting Text");
 
         }
-        qDebug()<<"these numbers should be ==";
-        qDebug()<<toShow;
         currentNode = toShow;
-        qDebug()<<currentNode;
-
     }
 }
 
 void pcbShower::showNext()
 {
-    updateDisplay(currentNode->nextPCB);
+    if( currentNode->nextPCB!=NULL)
+    {
+        updateDisplay(currentNode->nextPCB);
+    }
 }
 
 void pcbShower::showPrev()
-{
-    updateDisplay(currentNode->prevPCB);
+{   if( currentNode->prevPCB!=NULL)
+    {
+        updateDisplay(currentNode->prevPCB);
+    }
 }
