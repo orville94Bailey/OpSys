@@ -51,7 +51,8 @@ private:
                 *showReadyButton,
                 *readFileButton;
     QSpinBox    *prioritySBox,
-                *timeRemainingSBox;
+                *timeRemainingSBox,
+                *reqMemLEdit;
     pcbShower showWindow;
 
 private slots:

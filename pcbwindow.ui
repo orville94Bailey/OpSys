@@ -127,16 +127,6 @@
     <string>APP or SYS</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="reqMemLEdit">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>150</y>
-     <width>113</width>
-     <height>23</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QCheckBox" name="suspendedCBox">
    <property name="geometry">
     <rect>
@@ -314,6 +304,19 @@
    </property>
    <property name="text">
     <string>Read File</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="reqMemSBox">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>150</y>
+     <width>101</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>2048</number>
    </property>
   </widget>
  </widget>

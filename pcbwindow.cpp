@@ -28,6 +28,7 @@ pcbWindow::pcbWindow(QWidget *parent) :
     prioritySBox = ui->prioritySBox;
     fileNameLEdit = ui->fileNameLEdit;
     readFileButton = ui->readFileButton;
+    reqMemLEdit = ui->reqMemSBox;
 
     //connecting buttons to function calls
     //connect(createButton, SIGNAL(clicked()),this,SLOT(createPCB()));
@@ -66,6 +67,7 @@ pcbWindow::~pcbWindow()
     delete showBlockedButton;
     delete showReadyButton;
     delete fileNameLEdit;
+    delete reqMemLEdit;
 }
 
 void pcbWindow::showPCBList()
