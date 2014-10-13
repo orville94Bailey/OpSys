@@ -110,7 +110,7 @@ void PCBController::readFile(QString fileName)
         timeOfArrival,
         cpuPercent;
 
-    QFile toOpen(QCoreApplication::applicationDirPath()+"\\"+fileName);
+    QFile toOpen(QCoreApplication::applicationDirPath()+"/"+fileName);
     if(toOpen.exists())
     {
         if(!toOpen.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -119,10 +119,8 @@ void PCBController::readFile(QString fileName)
             return;
         }
         QTextStream toRead(&toOpen);
-        int i = 0;
         while (!toRead.atEnd())
         {
-            qDebug()<<i<<"\'th iteration";
             toRead>>processName;
             toRead>>pcbClass;
             toRead>>priority;
@@ -131,8 +129,7 @@ void PCBController::readFile(QString fileName)
             toRead>>timeOfArrival;
             toRead>>cpuPercent;
             insertPCB(setupPCB(processName,pcbClass,priority,memory,timeRemaining,timeOfArrival,cpuPercent));
-            qDebug()<<"pcb created";
-            i++;
+            processName = "";
         }
         toOpen.close();
     }

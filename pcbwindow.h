@@ -52,7 +52,7 @@ private:
                 *readFileButton;
     QSpinBox    *prioritySBox,
                 *timeRemainingSBox,
-                *reqMemLEdit;
+                *reqMemSBox;
     pcbShower showWindow;
 
 private slots:
