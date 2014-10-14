@@ -222,14 +222,12 @@ bool pcbWindow::setPriority()
 
 void pcbWindow::showBlockedPCB()
 {
-    showWindow.show();
     showWindow.updateDisplay(control.blockedList.firstNode);
     showWindow.show();
 }
 
 void pcbWindow::showReadyPCB()
 {
-    showWindow.show();
     showWindow.updateDisplay(control.readyList.firstNode);
     showWindow.show();
 }

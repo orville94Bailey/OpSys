@@ -20,6 +20,7 @@ public slots:
     void updateDisplay(PCB*);
     void showNext();
     void showPrev();
+    void doThingsOnHide();
 
     
 private:

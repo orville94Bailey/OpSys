@@ -16,7 +16,7 @@ pcbShower::pcbShower(QWidget *parent) :
     priorityText = ui->priorityText;
     currentNode = NULL;
 
-    connect(quitButton,SIGNAL(clicked()),this,SLOT(hide()));
+    connect(quitButton,SIGNAL(clicked()),this,SLOT(doThingsOnHide()));
     connect(nextPCB,SIGNAL(clicked()),this,SLOT(showNext()));
     connect(prevPCB,SIGNAL(clicked()),this,SLOT(showPrev()));
 }
@@ -31,6 +31,12 @@ pcbShower::~pcbShower()
     delete classText;
     delete stateText;
     delete priorityText;
+}
+
+void pcbShower::doThingsOnHide()
+{
+    currentNode = NULL;
+    hide();
 }
 
 void pcbShower::updateDisplay(PCB* toShow)
