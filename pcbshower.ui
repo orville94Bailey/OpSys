@@ -57,12 +57,12 @@
     <rect>
      <x>30</x>
      <y>60</y>
-     <width>67</width>
+     <width>111</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>Name   :</string>
+    <string>Name               :</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -70,12 +70,12 @@
     <rect>
      <x>30</x>
      <y>90</y>
-     <width>67</width>
+     <width>111</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>Class     :</string>
+    <string>Class                :</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_3">
@@ -83,12 +83,12 @@
     <rect>
      <x>30</x>
      <y>120</y>
-     <width>67</width>
+     <width>111</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>Priority:</string>
+    <string>Priority             :</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_4">
@@ -96,12 +96,12 @@
     <rect>
      <x>30</x>
      <y>150</y>
-     <width>61</width>
+     <width>111</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>State    :</string>
+    <string>State                :</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_5">
@@ -120,53 +120,131 @@
   <widget class="QLabel" name="nameText">
    <property name="geometry">
     <rect>
-     <x>110</x>
+     <x>140</x>
      <y>60</y>
      <width>261</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string/>
    </property>
   </widget>
   <widget class="QLabel" name="classText">
    <property name="geometry">
     <rect>
-     <x>110</x>
+     <x>140</x>
      <y>90</y>
      <width>271</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string/>
    </property>
   </widget>
   <widget class="QLabel" name="priorityText">
    <property name="geometry">
     <rect>
-     <x>110</x>
+     <x>140</x>
      <y>120</y>
      <width>261</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string/>
    </property>
   </widget>
   <widget class="QLabel" name="stateText">
    <property name="geometry">
     <rect>
-     <x>110</x>
+     <x>140</x>
      <y>150</y>
      <width>261</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>180</y>
+     <width>101</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Arrival Time      :</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>210</y>
+     <width>111</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Remaining Time:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>210</y>
+     <width>51</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>CPU %:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="arrivalLabel">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>180</y>
+     <width>53</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="remainingLabel">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>210</y>
+     <width>53</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="CPUPercentageLabel">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>210</y>
+     <width>53</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>

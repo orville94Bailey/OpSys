@@ -6,6 +6,7 @@ pcbShower::pcbShower(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::pcbShower)
 {
+    qDebug()<<"begining of pcbShower constructor";
     ui->setupUi(this);
     quitButton = ui->quitButton;
     nextPCB = ui->nextButton;
@@ -14,11 +15,15 @@ pcbShower::pcbShower(QWidget *parent) :
     classText = ui->classText;
     stateText = ui->stateText;
     priorityText = ui->priorityText;
+    CPUPercentageLabel = ui->CPUPercentageLabel;
+    remainingLabel = ui->remainingLabel;
+    arrivalLabel = ui->arrivalLabel;
     currentNode = NULL;
 
     connect(quitButton,SIGNAL(clicked()),this,SLOT(doThingsOnHide()));
     connect(nextPCB,SIGNAL(clicked()),this,SLOT(showNext()));
     connect(prevPCB,SIGNAL(clicked()),this,SLOT(showPrev()));
+    qDebug()<<"end of pcbShower constructor";
 }
 
 pcbShower::~pcbShower()
@@ -36,6 +41,13 @@ pcbShower::~pcbShower()
 void pcbShower::doThingsOnHide()
 {
     currentNode = NULL;
+    priorityText->setText("");
+    nameText->setText("");
+    classText->setText("");
+    stateText->setText("");
+    CPUPercentageLabel->setText("");
+    remainingLabel->setText("");
+    arrivalLabel->setText("");
     hide();
 }
 
@@ -80,21 +92,32 @@ void pcbShower::updateDisplay(PCB* toShow)
             stateText->setText("Problem Occured Setting Text");
 
         }
+
+        CPUPercentageLabel->setText(QString::number(toShow->getPercentCPU()));
+        remainingLabel->setText(QString::number(toShow->getTimeRemaining()));
+        arrivalLabel->setText(QString::number(toShow->getTimeOfArrival()));
         currentNode = toShow;
     }
+
 }
 
 void pcbShower::showNext()
 {
-    if( currentNode->nextPCB!=NULL)
+    if(currentNode!=NULL)
     {
-        updateDisplay(currentNode->nextPCB);
+        if( currentNode->nextPCB!=NULL)
+        {
+            updateDisplay(currentNode->nextPCB);
+        }
     }
 }
 
 void pcbShower::showPrev()
-{   if( currentNode->prevPCB!=NULL)
+{   if(currentNode!=NULL)
     {
-        updateDisplay(currentNode->prevPCB);
+            if( currentNode->prevPCB!=NULL)
+            {
+                updateDisplay(currentNode->prevPCB);
+            }
     }
 }

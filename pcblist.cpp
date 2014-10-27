@@ -25,6 +25,7 @@ int PCBList::listLength()
 
 void PCBList::push(PCB* nodeToAdd)
 {
+    qDebug()<<"push begin";
     if(lastNode!=NULL)
     {
         lastNode->nextPCB = nodeToAdd;
@@ -36,6 +37,7 @@ void PCBList::push(PCB* nodeToAdd)
         firstNode = nodeToAdd;
         lastNode = nodeToAdd;
     }
+    qDebug()<<"end push";
 }
 
 PCB* PCBList::pop()
@@ -53,48 +55,87 @@ PCB* PCBList::findPCB(QString nameSearch)
 {
     PCB* holder;
     holder = firstNode;
-
-    while(holder!=NULL)
+    if(nameSearch!=NULL)
     {
-        //qDebug()<<"inside while";
-        if(holder->getName()==nameSearch)
+        while(holder!=NULL)
         {
-            //qDebug()<<"inside if";
-            //qDebug()<<holder;
-            return holder;
+            //qDebug()<<"inside while";
+            if(holder->getName()==nameSearch)
+            {
+                //qDebug()<<"inside if";
+                //qDebug()<<holder;
+                return holder;
+            }
+            holder = holder->nextPCB;
         }
-        holder = holder->nextPCB;
+        //qDebug()<<holder;
     }
-    //qDebug()<<holder;
     return NULL;
 }
 
 void PCBList::removePCB(PCB* nodeToRemove)
 {
-    if(nodeToRemove->nextPCB!=NULL && nodeToRemove->prevPCB!=NULL)//NODE BEFORE AND AFTER
+    qDebug()<<"begin removePCB";
+    if(nodeToRemove != NULL)
     {
-        nodeToRemove->nextPCB->prevPCB=nodeToRemove->prevPCB;
-        nodeToRemove->prevPCB->nextPCB=nodeToRemove->nextPCB;
-        nodeToRemove->nextPCB=NULL;
-        nodeToRemove->prevPCB=NULL;
+        qDebug()<<"node != NULL";
+        if(nodeToRemove->nextPCB!=NULL && nodeToRemove->prevPCB!=NULL)//NODE BEFORE AND AFTER
+        {
+            qDebug()<<"first case";
+            nodeToRemove->nextPCB->prevPCB=nodeToRemove->prevPCB;
+            nodeToRemove->prevPCB->nextPCB=nodeToRemove->nextPCB;
+            nodeToRemove->nextPCB=NULL;
+            nodeToRemove->prevPCB=NULL;
+        }
+        else if(nodeToRemove->nextPCB==NULL && nodeToRemove->prevPCB!=NULL)//NODE BEFORE NOT AFTER
+        {
+            qDebug()<<"second case";
+            nodeToRemove->prevPCB->nextPCB=NULL;
+            nodeToRemove->nextPCB=NULL;
+            nodeToRemove->prevPCB=NULL;
+        }
+        else if(nodeToRemove->nextPCB!=NULL && nodeToRemove->prevPCB==NULL)//NODE AFTER NOT BEFORE
+        {
+            qDebug()<<"third case";
+            firstNode = nodeToRemove->nextPCB;
+            nodeToRemove->nextPCB=NULL;
+            nodeToRemove->prevPCB=NULL;
+            firstNode->prevPCB = NULL;
+        }
+        else if(nodeToRemove->nextPCB==NULL && nodeToRemove->prevPCB==NULL)//NO NODE BEFORE or AFTER
+        {
+            qDebug()<<"fourth case";
+            nodeToRemove->nextPCB=NULL;
+            nodeToRemove->prevPCB=NULL;
+            firstNode = NULL;
+        }
     }
-    else if(nodeToRemove->nextPCB==NULL && nodeToRemove->prevPCB!=NULL)//NODE BEFORE NOT AFTER
+}
+
+PCB* PCBList::shortestToCompletion()
+{
+    PCB* holder = firstNode;
+    PCB* shortestHolder = NULL;
+    int shortestValue;
+    if(firstNode!=NULL)
     {
-        nodeToRemove->prevPCB->nextPCB=NULL;
-        nodeToRemove->nextPCB=NULL;
-        nodeToRemove->prevPCB=NULL;
+        shortestValue = holder->getTimeRemaining();
+        shortestHolder = holder;
+        qDebug()<<holder;
+        qDebug()<<shortestValue;
+        while(holder!=NULL)
+        {
+            qDebug()<<holder;
+            qDebug()<<holder->getTimeRemaining();
+            if(holder->getTimeRemaining()<shortestValue)
+            {
+                shortestValue = holder->getTimeRemaining();
+                shortestHolder = holder;
+            }
+            holder = holder->nextPCB;
+        }
     }
-    else if(nodeToRemove->nextPCB!=NULL && nodeToRemove->prevPCB==NULL)//NODE AFTER NOT BEFORE
-    {
-        firstNode = nodeToRemove->nextPCB;
-        nodeToRemove->nextPCB=NULL;
-        nodeToRemove->prevPCB=NULL;
-        firstNode->prevPCB = NULL;
-    }
-    else if(nodeToRemove->nextPCB==NULL && nodeToRemove->prevPCB==NULL)//NO NODE BEFORE AND AFTER
-    {
-        nodeToRemove->nextPCB=NULL;
-        nodeToRemove->prevPCB=NULL;
-        firstNode = NULL;
-    }
+    qDebug()<<shortestValue;
+    qDebug()<<shortestHolder;
+    return shortestHolder;
 }

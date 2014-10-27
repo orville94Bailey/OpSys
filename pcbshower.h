@@ -31,7 +31,10 @@ private:
     QLabel *nameText,
             *priorityText,
             *classText,
-            *stateText;
+            *stateText,
+            *CPUPercentageLabel,
+            *remainingLabel,
+            *arrivalLabel;
     PCB *currentNode;
 };
 

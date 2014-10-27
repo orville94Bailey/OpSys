@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include "qpcbcontroller.h"
 
 namespace Ui {
 class processSchedulers;
@@ -14,15 +15,16 @@ class processSchedulers : public QWidget
 
 private slots:
 
-
 public:
     explicit processSchedulers(QWidget *parent = 0);
     ~processSchedulers();
+    QPushButton *quitButton,
+    *SJHButton;
 
 private:
     Ui::processSchedulers *ui;
-    QPushButton *quitButton,
-                *SJHButton;
+
+    QPCBController *controlPointer;
 };
 
 #endif // PROCESSSCHEDULERS_H

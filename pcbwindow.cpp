@@ -6,7 +6,11 @@ pcbWindow::pcbWindow(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::pcbWindow)
 {
+    qDebug()<<"begining of pcbWindow constructor";
     ui->setupUi(this);
+
+    control = new QPCBController();
+    scheduler = new processSchedulers;
 
     //button to pointer
     //createButton = ui->createButton;
@@ -21,6 +25,7 @@ pcbWindow::pcbWindow(QWidget *parent) :
     showBlockedButton = ui->showBlocked;
     showReadyButton = ui->showReady;
     timeRemainingSBox = ui->timeRemainingSBox;
+    schedulerButton = ui->schedulerButton;
 
     //line edit to pointer
     nameLEdit = ui->nameLEdit;
@@ -44,6 +49,11 @@ pcbWindow::pcbWindow(QWidget *parent) :
     connect(showBlockedButton,SIGNAL(clicked()),this,SLOT(showBlockedPCB()));
     connect(showReadyButton,SIGNAL(clicked()),this,SLOT(showReadyPCB()));
     connect(readFileButton,SIGNAL(clicked()),this,SLOT(readFile()));
+    connect(schedulerButton,SIGNAL(clicked()),this,SLOT(showSchedulers()));
+    qDebug()<<"before fuckup?";
+    connect(scheduler->SJHButton,SIGNAL(clicked()),control,SLOT(shortestJobFirst()));
+
+    qDebug()<<"end of pcbWindow constructor";
 }
 
 pcbWindow::~pcbWindow()
@@ -72,23 +82,17 @@ pcbWindow::~pcbWindow()
 
 void pcbWindow::showPCBList()
 {
-    //showWindow.show();
-
-      showWindow.updateDisplay(control.findPCB(nameLEdit->text()));
+      showWindow.updateDisplay(control->findPCB(nameLEdit->text()));
       showWindow.show();
 }
 
 void pcbWindow::createPCB()
 {
-    qDebug()<<"createPCB started";
-    if(control.findPCB(nameLEdit->text())==NULL)
+    if(control->findPCB(nameLEdit->text())==NULL)
     {
-        qDebug()<<"findPCB is ok";
         if(classLEdit->text().toStdString()=="APPLICATION" || classLEdit->text().toStdString()=="SYSTEM")
         {
-            //<<"before insert";
-            control.insertPCB(control.setupPCB(nameLEdit->text(),classLEdit->text(),prioritySBox->value(), reqMemLEdit->text().toInt(),timeRemainingSBox->value(),0,1));
-            qDebug()<<"after insert";
+            control->insertPCB(control->setupPCB(nameLEdit->text(),classLEdit->text(),prioritySBox->value(), reqMemLEdit->text().toInt(),timeRemainingSBox->value(),0,1));
         }
     }
 }
@@ -96,11 +100,11 @@ void pcbWindow::createPCB()
 bool pcbWindow::deletePCB()
 {
     PCB* toDelete;
-    toDelete = control.findPCB(nameLEdit->text());
+    toDelete = control->findPCB(nameLEdit->text());
     if(toDelete !=NULL)
     {
-        control.RemovePCB(toDelete);
-        control.freePCB(toDelete);
+        control->RemovePCB(toDelete);
+        control->freePCB(toDelete);
         return true;
     }
     return false;
@@ -109,14 +113,14 @@ bool pcbWindow::deletePCB()
 bool pcbWindow::block()
 {
     PCB* toBlock;
-    toBlock = control.findPCB(nameLEdit->text());
+    toBlock = control->findPCB(nameLEdit->text());
 
     if(toBlock!=NULL)
     {
         if(toBlock->getState()==READY || toBlock->getState()==SUSPENDEDREADY)
         {
             qDebug()<<toBlock->getState();
-            control.RemovePCB(toBlock);
+            control->RemovePCB(toBlock);
             if(toBlock->getState()==READY)
             {
                 qDebug()<<"attempting block";
@@ -128,7 +132,7 @@ bool pcbWindow::block()
                 toBlock->setState(SUSPENDEDBLOCKED);
             }
 
-            control.insertPCB(toBlock);
+            control->insertPCB(toBlock);
             return true;
         }
         return false;
@@ -139,13 +143,13 @@ bool pcbWindow::block()
 bool pcbWindow::unblock()
 {
     PCB* toUnblock;
-    toUnblock = control.findPCB(nameLEdit->text());
+    toUnblock = control->findPCB(nameLEdit->text());
 
     if(toUnblock != NULL)
     {
         if(toUnblock->getState()==BLOCKED || toUnblock->getState()==SUSPENDEDBLOCKED)
         {
-            control.RemovePCB(toUnblock);
+            control->RemovePCB(toUnblock);
             if(toUnblock->getState()==BLOCKED)
             {
                 toUnblock->setState(READY);
@@ -155,7 +159,7 @@ bool pcbWindow::unblock()
                 toUnblock->setState(SUSPENDEDREADY);
             }
 
-            control.insertPCB(toUnblock);
+            control->insertPCB(toUnblock);
             return true;
         }
         return false;
@@ -166,7 +170,7 @@ bool pcbWindow::unblock()
 bool pcbWindow::suspend()
 {
     PCB* toSuspend;
-    toSuspend = control.findPCB(nameLEdit->text());
+    toSuspend = control->findPCB(nameLEdit->text());
 
     if(toSuspend!=NULL)
     {
@@ -188,7 +192,7 @@ bool pcbWindow::suspend()
 bool pcbWindow::resume()
 {
     PCB* toResume;
-    toResume = control.findPCB(nameLEdit->text());
+    toResume = control->findPCB(nameLEdit->text());
 
     if(toResume!=NULL)
     {
@@ -210,7 +214,7 @@ bool pcbWindow::resume()
 bool pcbWindow::setPriority()
 {
     PCB* toChange;
-    toChange = control.findPCB(nameLEdit->text());
+    toChange = control->findPCB(nameLEdit->text());
 
     if(toChange!=NULL)
     {
@@ -222,13 +226,13 @@ bool pcbWindow::setPriority()
 
 void pcbWindow::showBlockedPCB()
 {
-    showWindow.updateDisplay(control.blockedList.firstNode);
+    showWindow.updateDisplay(control->blockedList.firstNode);
     showWindow.show();
 }
 
 void pcbWindow::showReadyPCB()
 {
-    showWindow.updateDisplay(control.readyList.firstNode);
+    showWindow.updateDisplay(control->readyList.firstNode);
     showWindow.show();
 }
 
@@ -236,6 +240,11 @@ void pcbWindow::readFile()
 {
     if (fileNameLEdit->text()!="")
     {
-        control.readFile(fileNameLEdit->text());
+        control->readFile(fileNameLEdit->text());
     }
+}
+
+void pcbWindow::showSchedulers()
+{
+    scheduler->show();
 }

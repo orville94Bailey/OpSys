@@ -2,13 +2,13 @@
 #define PCBWINDOW_H
 
 #include <QWidget>
-#include "pcbcontroller.h"
+#include "qpcbcontroller.h"
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QPushButton>
 #include <QSpinBox>
 #include "pcbshower.h"
-
+#include "processschedulers.h"
 namespace Ui {
 class pcbWindow;
 }
@@ -19,7 +19,9 @@ class pcbWindow : public QWidget
 
 public:
     explicit pcbWindow(QWidget *parent = 0);
-    PCBController control;
+    QPCBController *control;
+    processSchedulers *scheduler;
+    pcbShower showWindow;
     ~pcbWindow();
 
 private:
@@ -49,11 +51,11 @@ private:
                 *quitButton,
                 *showBlockedButton,
                 *showReadyButton,
-                *readFileButton;
+                *readFileButton,
+                *schedulerButton;
     QSpinBox    *prioritySBox,
                 *timeRemainingSBox,
                 *reqMemSBox;
-    pcbShower showWindow;
 
 private slots:
     void showPCBList();//done
@@ -67,6 +69,7 @@ private slots:
     bool suspend();//done
     bool resume();//done
     void readFile();
+    void showSchedulers();
 };
 
 #endif // PCBWINDOW_H
