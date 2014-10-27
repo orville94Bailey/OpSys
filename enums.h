@@ -17,3 +17,13 @@ enum PCBState
     SUSPENDEDREADY,
     SUSPENDEDBLOCKED
 };
+
+enum SchedulerType
+{
+    FIFO,
+    STCF,
+    FPPS,
+    RR,
+    MLFQ,
+    LS
+};

@@ -9,6 +9,9 @@ QPCBController::QPCBController(QWidget *parent) :
 {
     ui->setupUi(this);
     systemTime=0;
+    runningPCB=NULL;
+    totalTurnaround = 0;
+    numOfPCB = 0;
 }
 
 QPCBController::~QPCBController()
@@ -190,10 +193,70 @@ PCB* QPCBController::checkForArrivals()
     return NULL;
 }
 
-void QPCBController::step(PCB* runningPCB)
+void QPCBController::step()
 {
+    PCB* holder;
+    holder = NULL;
+    while(readyList.listLength()>0 || blockedList.listLength()>0)
+    {
+        if(checkForArrivals()!=NULL)
+        {
+            while(checkForArrivals()!=NULL)
+            {
+                holder = checkForArrivals();
+                switch(holder->getState())
+                {
+                case 2:
+                    holder->setState(READY);
+                    RemovePCB(holder);
+                    insertPCB(holder);
+                    qDebug()<<holder->getName()<<" added as ready";
+                    //insert log here
+                    break;
+                case 4:
+                    holder->setState(SUSPENDEDREADY);
+                    RemovePCB(holder);
+                    insertPCB(holder);
+                    qDebug()<<holder->getName()<<" added as suspended ready";
+                    //insert log here
+                    break;
+                default:
+                    qDebug()<<"something's wrong";
+                    break;
+                }
+            }
+
+            switch(currentScheduler)//reevaluates the scheduler
+            {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            default:
+                break;
+            }
+        }
+        if(runningPCB!=NULL)
+        {
+            if(runningPCB->getTimeRemaining()<=0)
+            {
+                qDebug()<<runningPCB->getName()<<" finished";
+                //log here
+                delete runningPCB;
+                runningPCB=NULL;
+                runningPCB = readyList.pop();
+            }
+        }
+        else
+        {
+            runningPCB = readyList.pop();
+        }
+
+        systemTime++;
+        runningPCB->setTimeRemaining(runningPCB->getTimeRemaining()-1);
+    }
 
 
-    systemTime++;
-    runningPCB->setTimeRemaining(runningPCB->getTimeRemaining()-1);
 }

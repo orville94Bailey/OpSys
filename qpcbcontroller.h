@@ -23,7 +23,7 @@ public:
     bool insertPCB(PCB*nodeToInsert);//done
     void RemovePCB(PCB*nodeToRemove);//done
     void readFile(QString);
-    void step(PCB*);
+    void step();
     PCBList readyList,blockedList;
     ~QPCBController();
 
@@ -35,6 +35,10 @@ public slots:
 private:
     Ui::QPCBController *ui;
     int systemTime;
+    int totalTurnaround;
+    int numOfPCB;
+    PCB* runningPCB;
+    SchedulerType currentScheduler;
     PCB* checkForArrivals();
 };
 
