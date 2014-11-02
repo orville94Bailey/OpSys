@@ -20,10 +20,12 @@ enum PCBState
 
 enum SchedulerType
 {
+    SJF,
     FIFO,
     STCF,
     FPPS,
     RR,
     MLFQ,
-    LS
+    LS,
+    NOTSET
 };

@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QString>
 #include <QWidget>
+#include "enums.h"
 
 namespace Ui {
 class QPCBController;

@@ -157,22 +157,26 @@ void QPCBController::readFile(QString fileName)
 
 void QPCBController::shortestJobFirst()
 {
-    PCB* shortestJob;
-    while(blockedList.firstNode != NULL)
+    if(currentScheduler == SJF || currentScheduler == NOTSET)
     {
-        qDebug()<<"before shortestToCompleteon";
-        shortestJob = blockedList.shortestToCompletion();
-        qDebug()<<"before remove PCB";
-        qDebug()<<shortestJob;
-        RemovePCB(shortestJob);
-        if(shortestJob!=NULL)
+        PCB* shortestJob;
+        currentScheduler = SJF;
+        while(blockedList.firstNode != NULL)
         {
-            shortestJob->setState(READY);
-        }
+            qDebug()<<"before shortestToCompleteon";
+            shortestJob = blockedList.shortestToCompletion();
+            qDebug()<<"before remove PCB";
+            qDebug()<<shortestJob;
+            RemovePCB(shortestJob);
+            if(shortestJob!=NULL)
+            {
+                shortestJob->setState(READY);
+            }
 
-        qDebug()<<shortestJob;
-        qDebug()<<shortestJob->getState();
-        insertPCB(shortestJob);
+            qDebug()<<shortestJob;
+            qDebug()<<shortestJob->getState();
+            insertPCB(shortestJob);
+        }
     }
 }
 
@@ -197,66 +201,26 @@ void QPCBController::step()
 {
     PCB* holder;
     holder = NULL;
-    while(readyList.listLength()>0 || blockedList.listLength()>0)
+
+    while(checkForArrivals()!=NULL)
     {
-        if(checkForArrivals()!=NULL)
-        {
-            while(checkForArrivals()!=NULL)
-            {
-                holder = checkForArrivals();
-                switch(holder->getState())
-                {
-                case 2:
-                    holder->setState(READY);
-                    RemovePCB(holder);
-                    insertPCB(holder);
-                    qDebug()<<holder->getName()<<" added as ready";
-                    //insert log here
-                    break;
-                case 4:
-                    holder->setState(SUSPENDEDREADY);
-                    RemovePCB(holder);
-                    insertPCB(holder);
-                    qDebug()<<holder->getName()<<" added as suspended ready";
-                    //insert log here
-                    break;
-                default:
-                    qDebug()<<"something's wrong";
-                    break;
-                }
-            }
+        holder = checkForArrivals();
+        RemovePCB(holder);
 
-            switch(currentScheduler)//reevaluates the scheduler
-            {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            default:
-                break;
-            }
-        }
-        if(runningPCB!=NULL)
+        if(holder->getState() == BLOCKED)
         {
-            if(runningPCB->getTimeRemaining()<=0)
-            {
-                qDebug()<<runningPCB->getName()<<" finished";
-                //log here
-                delete runningPCB;
-                runningPCB=NULL;
-                runningPCB = readyList.pop();
-            }
+            holder->setState(READY);
         }
-        else
+        if(holder->getState() == SUSPENDEDBLOCKED)
         {
-            runningPCB = readyList.pop();
+            holder->setState(SUSPENDEDREADY);
         }
 
-        systemTime++;
+        insertPCB(holder);
+    }
+    if(runningPCB!=NULL)
+    {
         runningPCB->setTimeRemaining(runningPCB->getTimeRemaining()-1);
     }
-
-
+    systemTime++;
 }
