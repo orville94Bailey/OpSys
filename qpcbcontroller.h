@@ -17,19 +17,24 @@ class QPCBController : public QWidget
 
 public:
     explicit QPCBController(QWidget *parent = 0);
-    PCB* setupPCB(QString processName,QString pcbClass="S", int priority=0,int memory=0,int timeRemaining=0,int timeOfArrival=0,int cpuPercent=1);//done
+    PCB* setupPCB(QString processName,QString pcbClass="A", int priority=0,int memory=0,int timeRemaining=0,int timeOfArrival=0,int cpuPercent=1);//done
     PCB* allocatePCB();//done
     PCB* findPCB(QString name);//done
     void freePCB(PCB*nodeToKill);//done
     bool insertPCB(PCB*nodeToInsert);//done
-    void RemovePCB(PCB*nodeToRemove);//done
+    void removePCB(PCB*nodeToRemove);//done
     void readFile(QString);
-    void step();
+    void step(SchedulerType);
+    void insertNewArrivals();
+    void setAsRunning(PCB*);
+    PCB *shortestJob();
+    PCB *highestPriority();
+
     PCBList readyList,blockedList;
     ~QPCBController();
 
 public slots:
-    void shortestJobFirst();
+
 
 
 
@@ -38,6 +43,7 @@ private:
     int systemTime;
     int totalTurnaround;
     int numOfPCB;
+    int quantum;
     PCB* runningPCB;
     SchedulerType currentScheduler;
     PCB* checkForArrivals();

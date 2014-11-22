@@ -103,7 +103,7 @@ bool pcbWindow::deletePCB()
     toDelete = control->findPCB(nameLEdit->text());
     if(toDelete !=NULL)
     {
-        control->RemovePCB(toDelete);
+        control->removePCB(toDelete);
         control->freePCB(toDelete);
         return true;
     }
@@ -120,7 +120,7 @@ bool pcbWindow::block()
         if(toBlock->getState()==READY || toBlock->getState()==SUSPENDEDREADY)
         {
             qDebug()<<toBlock->getState();
-            control->RemovePCB(toBlock);
+            control->removePCB(toBlock);
             if(toBlock->getState()==READY)
             {
                 qDebug()<<"attempting block";
@@ -149,7 +149,7 @@ bool pcbWindow::unblock()
     {
         if(toUnblock->getState()==BLOCKED || toUnblock->getState()==SUSPENDEDBLOCKED)
         {
-            control->RemovePCB(toUnblock);
+            control->removePCB(toUnblock);
             if(toUnblock->getState()==BLOCKED)
             {
                 toUnblock->setState(READY);

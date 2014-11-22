@@ -10,19 +10,21 @@ class PCB
 public:
     PCB();
     void setName(QString);
-    void setState(PCBState);
-    void setPriority(int);
-    void setMem(int);
     void setClass(PCBType);
+    void setPriority(int);
+    void setState(PCBState);
+    void setMem(int);
+
     void setTimeRemaining(int);
     void setTimeOfArrival(int);
     void setPercentCPU(int);
 
     QString getName();
-    PCBState getState();
-    int getPriority();
-    int getMem();
     PCBType getPCBClass();
+    int getPriority();
+    PCBState getState();
+    int getMem();
+
     int getTimeRemaining();
     int getTimeOfArrival();
     int getPercentCPU();
@@ -31,10 +33,11 @@ public:
 
 private:
     QString processName;
-    PCBState state;
-    int priorityLevel;
-    int memRequired;
     PCBType PCBClass;
+    int priorityLevel;
+    PCBState state;
+    int memRequired;
+
     int timeRemaining,
         timeOfArrival,
         percentCPU;

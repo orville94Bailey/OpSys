@@ -12,8 +12,9 @@ public:
     int listLength();
     PCB* findPCB(QString);
     void removePCB(PCB*nodeToRemove);
-    PCB* shortestToCompletion();
     PCB *firstNode,*lastNode;
+
+    PCB* shortestToCompletion();
     //User Commands
 
 };

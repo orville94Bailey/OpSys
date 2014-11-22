@@ -70,37 +70,45 @@ PCB* QPCBController::findPCB(QString name)
 
 void QPCBController::freePCB(PCB* nodeToKill)
 {
-    nodeToKill->nextPCB->prevPCB = nodeToKill->prevPCB;
-    nodeToKill->prevPCB->nextPCB = nodeToKill->nextPCB;
+    if(nodeToKill!=NULL)
+    {
+        nodeToKill->nextPCB->prevPCB = nodeToKill->prevPCB;
+        nodeToKill->prevPCB->nextPCB = nodeToKill->nextPCB;
 
-    delete nodeToKill;
+        delete nodeToKill;
+        nodeToKill = NULL;
+    }
+
 }
 
 bool QPCBController::insertPCB(PCB *nodeToInsert)
 {
-    switch(nodeToInsert->getState())
+    if(nodeToInsert!=NULL)
     {
-    case READY:
+        switch(nodeToInsert->getState())
+        {
+        case READY:
 
-    case SUSPENDEDREADY:
-        readyList.push(nodeToInsert);
-        return true;
-        break;
+        case SUSPENDEDREADY:
+            readyList.push(nodeToInsert);
+            return true;
+            break;
 
-    case BLOCKED:
+        case BLOCKED:
 
-    case SUSPENDEDBLOCKED:
-        blockedList.push(nodeToInsert);
-        return true;
-        break;
+        case SUSPENDEDBLOCKED:
+            blockedList.push(nodeToInsert);
+            return true;
+            break;
 
-    default:
-        return false;
-        break;
+        default:
+            break;
+        }
     }
+    return false;
 }
 
-void QPCBController::RemovePCB(PCB* nodeToRemove)
+void QPCBController::removePCB(PCB* nodeToRemove)
 {
     if(readyList.findPCB(nodeToRemove->getName())!=NULL)
     {
@@ -108,7 +116,7 @@ void QPCBController::RemovePCB(PCB* nodeToRemove)
         readyList.removePCB(nodeToRemove);
         qDebug()<<"removed from ready list";
     }
-    if(blockedList.findPCB(nodeToRemove->getName())!=NULL)
+    else if(blockedList.findPCB(nodeToRemove->getName())!=NULL)
     {
         qDebug()<<"entered blocked remove";
         blockedList.removePCB(nodeToRemove);
@@ -155,29 +163,64 @@ void QPCBController::readFile(QString fileName)
     }
 }
 
-void QPCBController::shortestJobFirst()
+PCB* QPCBController::shortestJob()
 {
-    if(currentScheduler == SJF || currentScheduler == NOTSET)
-    {
-        PCB* shortestJob;
-        currentScheduler = SJF;
-        while(blockedList.firstNode != NULL)
-        {
-            qDebug()<<"before shortestToCompleteon";
-            shortestJob = blockedList.shortestToCompletion();
-            qDebug()<<"before remove PCB";
-            qDebug()<<shortestJob;
-            RemovePCB(shortestJob);
-            if(shortestJob!=NULL)
-            {
-                shortestJob->setState(READY);
-            }
+    int iterations = readyList.listLength();
+    PCB* shortestJob;
+    int shortestJobTime;
+    PCB* holder = NULL;
 
-            qDebug()<<shortestJob;
-            qDebug()<<shortestJob->getState();
-            insertPCB(shortestJob);
+    shortestJob = NULL;
+    if(iterations>0)
+    {
+        shortestJob = readyList.firstNode;
+        shortestJobTime = shortestJob->getTimeRemaining();
+        holder = shortestJob;
+    }
+    for(int l=0; l<iterations;l++)
+    {
+        if(shortestJobTime>holder->getTimeRemaining())
+        {
+            shortestJob = holder;
+            shortestJobTime = shortestJob->getTimeRemaining();
+        }
+        if(holder->nextPCB!=NULL)
+        {
+            holder = holder->nextPCB;
         }
     }
+    removePCB(shortestJob);
+    return shortestJob;
+}
+
+PCB* QPCBController::highestPriority()
+{
+    int iterations = readyList.listLength();
+    PCB* highestPriority;
+    int highestPriorityInt;
+    PCB* holder = NULL;
+
+    highestPriority = NULL;
+    if(iterations>0)
+    {
+        highestPriority = readyList.firstNode;
+        highestPriorityInt = highestPriority->getPriority();
+        holder = highestPriority;
+    }
+    for(int l=0; l<iterations;l++)
+    {
+        if(highestPriorityInt>holder->getPriority())
+        {
+            highestPriority = holder;
+            highestPriorityInt = highestPriority->getPriority();
+        }
+        if(holder->nextPCB!=NULL)
+        {
+            holder = holder->nextPCB;
+        }
+    }
+    removePCB(highestPriority);
+    return highestPriority;
 }
 
 PCB* QPCBController::checkForArrivals()
@@ -197,7 +240,79 @@ PCB* QPCBController::checkForArrivals()
     return NULL;
 }
 
-void QPCBController::step()
+void QPCBController::step(SchedulerType SType)
+{
+    switch(SType)
+    {
+    case 0:
+        if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
+        {
+            freePCB(runningPCB);
+            setAsRunning(shortestJob());
+        }
+        break;
+    case 1:
+        if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
+        {
+            freePCB(runningPCB);
+            setAsRunning(readyList.pop());
+        }
+        break;
+    case 2:
+        if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
+        {
+            freePCB(runningPCB);
+            setAsRunning(shortestJob());
+        }
+        break;
+    case 3:
+        if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
+        {
+            freePCB(runningPCB);
+            setAsRunning(highestPriority());
+        }
+        break;
+    case 4:
+        if(runningPCB->getTimeRemaining()<=0 ||
+                runningPCB==NULL ||
+                systemTime%quantum==0)
+        {
+            if(runningPCB->getTimeRemaining()==0)
+            {
+                freePCB(runningPCB);
+                setAsRunning(readyList.pop());
+            }
+            else if(runningPCB==NULL)
+            {
+                setAsRunning(readyList.pop());
+            }
+            else//quantum has run out
+            {
+                runningPCB->setState(READY);
+                insertPCB(runningPCB);
+                setAsRunning(readyList.pop());
+            }
+        }
+        break;
+    case 5:
+        break;
+    case 6:
+        break;
+    case 7:
+        break;
+    }
+
+    insertNewArrivals();
+
+    if(runningPCB!=NULL)
+    {
+        runningPCB->setTimeRemaining(runningPCB->getTimeRemaining()-1);
+    }
+
+    systemTime++;
+}
+
+void QPCBController::insertNewArrivals()
 {
     PCB* holder;
     holder = NULL;
@@ -205,7 +320,7 @@ void QPCBController::step()
     while(checkForArrivals()!=NULL)
     {
         holder = checkForArrivals();
-        RemovePCB(holder);
+        removePCB(holder);
 
         if(holder->getState() == BLOCKED)
         {
@@ -218,9 +333,13 @@ void QPCBController::step()
 
         insertPCB(holder);
     }
-    if(runningPCB!=NULL)
+}
+
+void QPCBController::setAsRunning(PCB* holder)
+{
+    if(runningPCB==NULL)
     {
-        runningPCB->setTimeRemaining(runningPCB->getTimeRemaining()-1);
+        holder->setState(RUNNING);
+        runningPCB = holder;
     }
-    systemTime++;
 }

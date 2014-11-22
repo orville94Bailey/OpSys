@@ -1,8 +1,6 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
-#endif // ENUMS_H
-
 enum PCBType
 {
     APPLICATION,
@@ -29,3 +27,5 @@ enum SchedulerType
     LS,
     NOTSET
 };
+
+#endif
