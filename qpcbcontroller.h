@@ -6,6 +6,10 @@
 #include <QString>
 #include <QWidget>
 #include "enums.h"
+#include "processschedulers.h"
+#include <QObject>
+#include "quantumdefinewindow.h"
+#include "ticketdefine.h"
 
 namespace Ui {
 class QPCBController;
@@ -34,9 +38,17 @@ public:
     ~QPCBController();
 
 public slots:
-
-
-
+    void setCurrentScheduler(SchedulerType);
+    void defineQuantum();
+    void defineTickets();
+    void setSchedulerSFJ();
+    void setSchedulerFIFO();
+    void setSchedulerSTCF();
+    void setSchedulerFPPS();
+    void setSchedulerRR();
+    void setSchedulerMLFQ();
+    void setSchedulerLS();
+    void setSchedulerNOTSET();
 
 private:
     Ui::QPCBController *ui;
@@ -44,9 +56,19 @@ private:
     int totalTurnaround;
     int numOfPCB;
     int quantum;
+    int tickets;
     PCB* runningPCB;
     SchedulerType currentScheduler;
+    processSchedulers schedulerWindow;
+    QuantumDefineWindow quantumWindow;
+    ticketDefine ticketWindow;
+
     PCB* checkForArrivals();
+    void setCurrentQuantum();
+    void setCurrentTickets();
+    void changePriorities();
+
+
 };
 
 #endif // QPCBCONTROLLER_H

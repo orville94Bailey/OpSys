@@ -12,13 +12,64 @@ QPCBController::QPCBController(QWidget *parent) :
     runningPCB=NULL;
     totalTurnaround = 0;
     numOfPCB = 0;
+
+
+    connect(schedulerWindow.SJHButton,SIGNAL(clicked()),this,SLOT(setSchedulerSFJ()));
+    connect(schedulerWindow.FIFO_button,SIGNAL(clicked()),this,SLOT(setSchedulerFIFO()));
+    connect(schedulerWindow.STCF_button,SIGNAL(clicked()),this,SLOT(setSchedulerSTCF()));
+    connect(schedulerWindow.FPPS_button,SIGNAL(clicked()),this,SLOT(setSchedulerFPPS()));
+    connect(schedulerWindow.RR__button,SIGNAL(clicked()),this,SLOT(setSchedulerRR()));
+    connect(schedulerWindow.MLFQ_button,SIGNAL(clicked()),this,SLOT(setSchedulerMLFQ()));
+    connect(schedulerWindow.LS_button,SIGNAL(clicked()),this,SLOT(setSchedulerLS()));
+    connect(schedulerWindow.NONE_button,SIGNAL(clicked()),this,SLOT(setSchedulerNOTSET()));
+    connect(quantumWindow.Accept_button, SIGNAL(clicked()),this,SLOT(defineQuantum()));
+    connect(ticketWindow.Accept_button, SIGNAL(clicked()),this,SLOT(defineTickets()));
+}
+
+void QPCBController::setSchedulerSFJ()
+{
+    setCurrentScheduler(SJF);
+}
+
+void QPCBController::setSchedulerFIFO()
+{
+    setCurrentScheduler(FIFO);
+}
+
+void QPCBController::setSchedulerSTCF()
+{
+    setCurrentScheduler(STCF);
+}
+
+void QPCBController::setSchedulerFPPS()
+{
+    setCurrentScheduler(FPPS);
+}
+
+void QPCBController::setSchedulerRR()
+{
+    setCurrentScheduler(RR);
+}
+
+void QPCBController::setSchedulerMLFQ()
+{
+    setCurrentScheduler(MLFQ);
+}
+
+void QPCBController::setSchedulerLS()
+{
+    setCurrentScheduler(LS);
+}
+
+void QPCBController::setSchedulerNOTSET()
+{
+    setCurrentScheduler(NOTSET);
 }
 
 QPCBController::~QPCBController()
 {
     delete ui;
 }
-
 
 PCB* QPCBController::allocatePCB()
 {
@@ -244,61 +295,77 @@ void QPCBController::step(SchedulerType SType)
 {
     switch(SType)
     {
-    case 0:
+    case SJF:
         if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
         {
             freePCB(runningPCB);
             setAsRunning(shortestJob());
         }
         break;
-    case 1:
+    case FIFO:
         if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
         {
             freePCB(runningPCB);
             setAsRunning(readyList.pop());
         }
         break;
-    case 2:
+    case STCF:
         if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
         {
             freePCB(runningPCB);
             setAsRunning(shortestJob());
         }
         break;
-    case 3:
+    case FPPS:
         if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
         {
             freePCB(runningPCB);
             setAsRunning(highestPriority());
         }
         break;
-    case 4:
-        if(runningPCB->getTimeRemaining()<=0 ||
-                runningPCB==NULL ||
-                systemTime%quantum==0)
+    case RR:
+
+        if(runningPCB->getTimeRemaining()==0)
         {
-            if(runningPCB->getTimeRemaining()==0)
-            {
-                freePCB(runningPCB);
-                setAsRunning(readyList.pop());
-            }
-            else if(runningPCB==NULL)
-            {
-                setAsRunning(readyList.pop());
-            }
-            else//quantum has run out
-            {
-                runningPCB->setState(READY);
-                insertPCB(runningPCB);
-                setAsRunning(readyList.pop());
-            }
+            freePCB(runningPCB);
+            setAsRunning(readyList.pop());
+        }
+        else if(runningPCB==NULL)
+        {
+            setAsRunning(readyList.pop());
+        }
+        else//quantum has run out
+        {
+            runningPCB->setState(READY);
+            insertPCB(runningPCB);
+            setAsRunning(readyList.pop());
         }
         break;
-    case 5:
+    case MLFQ:
+        if(runningPCB->getTimeRemaining()==0)
+        {
+            freePCB(runningPCB);
+            setAsRunning(highestPriority());
+        }
+        else if(runningPCB==NULL)
+        {
+            setAsRunning(highestPriority());
+        }
+        else//quantum has run out
+        {
+            runningPCB->setState(READY);
+            insertPCB(runningPCB);
+            if(runningPCB->getPriority()>-127)
+            {
+                runningPCB->setPriority(runningPCB->getPriority()-1);
+            }
+            setAsRunning(readyList.pop());
+        }
         break;
-    case 6:
+    case LS:
         break;
-    case 7:
+    case NOTSET:
+        qDebug()<<"this isn't supposed to happen, like ever";
         break;
     }
 
@@ -341,5 +408,107 @@ void QPCBController::setAsRunning(PCB* holder)
     {
         holder->setState(RUNNING);
         runningPCB = holder;
+    }
+}
+
+void QPCBController::setCurrentScheduler(SchedulerType scheduler)
+{
+    currentScheduler = scheduler;
+    switch(scheduler)
+    {
+    case SJF:
+        qDebug()<<"SJF";
+        schedulerWindow.CurScheduler_Label->setText("SJF");
+        break;
+    case FIFO:
+        schedulerWindow.CurScheduler_Label->setText("FIFO");
+        break;
+    case STCF:
+        schedulerWindow.CurScheduler_Label->setText("STCF");
+        break;
+    case FPPS:
+        schedulerWindow.CurScheduler_Label->setText("FPPS");
+        break;
+    case RR:
+        schedulerWindow.CurScheduler_Label->setText("RR");
+        do
+        {
+            setCurrentQuantum();
+        }while(quantum<1);
+        break;
+    case MLFQ:
+        schedulerWindow.CurScheduler_Label->setText("MLFQ");
+        do
+        {
+            setCurrentQuantum();
+        }while(quantum<1);
+        break;
+    case LS:
+        schedulerWindow.CurScheduler_Label->setText("LS");
+        do
+        {
+            setCurrentTickets();
+        }while(tickets<1);
+        break;
+    case NOTSET:
+        schedulerWindow.CurScheduler_Label->setText("");
+        break;
+    }
+    schedulerWindow.update();
+}
+
+void QPCBController::setCurrentQuantum()
+{
+    quantumWindow.show();
+}
+
+void QPCBController::defineQuantum()
+{
+    quantum = quantumWindow.Quantum_SpinBox->value();
+}
+
+void QPCBController::setCurrentTickets()
+{
+    ticketWindow.show();
+}
+
+void QPCBController::defineTickets()
+{
+    tickets = ticketWindow.Ticket_SpinBox->value();
+}
+
+void QPCBController::changePriorities()
+{
+    int readyLength,
+        blockedLength;
+
+    readyLength = readyList.listLength();
+    blockedLength = blockedList.listLength();
+    PCB* holder;
+
+    holder = readyList.firstNode;
+    for(int x = 0;x<readyLength;x++)
+    {
+        if(holder->getPriority()<=0)
+        {
+            holder->setPriority(holder->getPriority()+128);
+        }
+        if(holder->nextPCB!=NULL)
+        {
+            holder = holder->nextPCB;
+        }
+    }
+
+    holder = blockedList.firstNode;
+    for(int x=0;x<blockedLength;x++)
+    {
+        if(holder->getPriority()<=0)
+        {
+            holder->setPriority(holder->getPriority()+128);
+        }
+        if(holder->nextPCB!=NULL)
+        {
+            holder = holder->nextPCB;
+        }
     }
 }

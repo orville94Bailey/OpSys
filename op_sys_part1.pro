@@ -23,7 +23,9 @@ SOURCES += main.cpp\
     pcbwindow.cpp \
     pcbshower.cpp \
     processschedulers.cpp \
-    qpcbcontroller.cpp
+    qpcbcontroller.cpp \
+    quantumdefinewindow.cpp \
+    ticketdefine.cpp
 
 HEADERS  += mainwindow.h \
     quitwindow.h \
@@ -36,7 +38,9 @@ HEADERS  += mainwindow.h \
     pcbwindow.h \
     pcbshower.h \
     processschedulers.h \
-    qpcbcontroller.h
+    qpcbcontroller.h \
+    quantumdefinewindow.h \
+    ticketdefine.h
 
 FORMS    += mainwindow.ui \
     quitwindow.ui \
@@ -46,4 +50,6 @@ FORMS    += mainwindow.ui \
     pcbwindow.ui \
     pcbshower.ui \
     processschedulers.ui \
-    qpcbcontroller.ui
+    qpcbcontroller.ui \
+    quantumdefinewindow.ui \
+    ticketdefine.ui

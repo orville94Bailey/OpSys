@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QPushButton>
-#include "qpcbcontroller.h"
+#include <QLabel>
 
 namespace Ui {
 class processSchedulers;
@@ -19,12 +19,17 @@ public:
     explicit processSchedulers(QWidget *parent = 0);
     ~processSchedulers();
     QPushButton *quitButton,
-    *SJHButton;
-
+                *SJHButton,
+                *FIFO_button,
+                *STCF_button,
+                *FPPS_button,
+                *RR__button,
+                *MLFQ_button,
+                *LS_button,
+                *NONE_button;
+    QLabel* CurScheduler_Label;
 private:
     Ui::processSchedulers *ui;
-
-    QPCBController *controlPointer;
 };
 
 #endif // PROCESSSCHEDULERS_H

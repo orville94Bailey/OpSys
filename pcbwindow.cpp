@@ -51,7 +51,6 @@ pcbWindow::pcbWindow(QWidget *parent) :
     connect(readFileButton,SIGNAL(clicked()),this,SLOT(readFile()));
     connect(schedulerButton,SIGNAL(clicked()),this,SLOT(showSchedulers()));
     qDebug()<<"before fuckup?";
-    connect(scheduler->SJHButton,SIGNAL(clicked()),control,SLOT(shortestJobFirst()));
 
     qDebug()<<"end of pcbWindow constructor";
 }
