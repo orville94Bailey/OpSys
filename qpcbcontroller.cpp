@@ -68,7 +68,6 @@ void QPCBController::setSchedulerNOTSET()
 QPCBController::~QPCBController()
 {
     delete ui;
-    logFile.close();
 }
 
 PCB* QPCBController::allocatePCB()
@@ -187,8 +186,10 @@ void QPCBController::readFile(QString fileName)
         cpuPercent;
 
     QFile toOpen(QCoreApplication::applicationDirPath()+"/"+fileName);
+    qDebug()<<QCoreApplication::applicationDirPath()+"/"+fileName;
     if(toOpen.exists())
     {
+        qDebug()<<"after toOpen.exists()";
         if(!toOpen.open(QIODevice::ReadOnly | QIODevice::Text))
         {
             return;
@@ -203,7 +204,10 @@ void QPCBController::readFile(QString fileName)
             toRead>>timeRemaining;
             toRead>>timeOfArrival;
             toRead>>cpuPercent;
-            insertPCB(setupPCB(processName,pcbClass,priority,memory,timeRemaining,timeOfArrival,cpuPercent));
+            if(insertPCB(setupPCB(processName,pcbClass,priority,memory,timeRemaining,timeOfArrival,cpuPercent)))
+            {
+                qDebug()<<"insertion successful";
+            }
             processName = "";
         }
         toOpen.close();
@@ -299,6 +303,10 @@ void QPCBController::step()
     case SJF:
         if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
         {
+            if(runningPCB!=NULL)
+            {
+                logProcessFinished(runningPCB->getName());
+            }
             freePCB(runningPCB);
             setAsRunning(shortestJob());
         }
@@ -306,6 +314,10 @@ void QPCBController::step()
     case FIFO:
         if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
         {
+            if(runningPCB!=NULL)
+            {
+                logProcessFinished(runningPCB->getName());
+            }
             freePCB(runningPCB);
             setAsRunning(readyList.pop());
         }
@@ -313,6 +325,10 @@ void QPCBController::step()
     case STCF:
         if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
         {
+            if(runningPCB!=NULL)
+            {
+                logProcessFinished(runningPCB->getName());
+            }
             freePCB(runningPCB);
             setAsRunning(shortestJob());
         }
@@ -320,6 +336,10 @@ void QPCBController::step()
     case FPPS:
         if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
         {
+            if(runningPCB!=NULL)
+            {
+                logProcessFinished(runningPCB->getName());
+            }
             freePCB(runningPCB);
             setAsRunning(highestPriority());
         }
@@ -328,6 +348,7 @@ void QPCBController::step()
 
         if(runningPCB->getTimeRemaining()==0)
         {
+            logProcessFinished(runningPCB->getName());
             freePCB(runningPCB);
             setAsRunning(readyList.pop());
         }
@@ -338,6 +359,7 @@ void QPCBController::step()
         else//quantum has run out
         {
             runningPCB->setState(READY);
+            logStateChange(runningPCB->getName(),runningPCB->getState());
             insertPCB(runningPCB);
             setAsRunning(readyList.pop());
         }
@@ -345,6 +367,7 @@ void QPCBController::step()
     case MLFQ:
         if(runningPCB->getTimeRemaining()==0)
         {
+            logProcessFinished(runningPCB->getName());
             freePCB(runningPCB);
             setAsRunning(highestPriority());
         }
@@ -355,6 +378,7 @@ void QPCBController::step()
         else//quantum has run out
         {
             runningPCB->setState(READY);
+            logStateChange(runningPCB->getName(),runningPCB->getState());
             insertPCB(runningPCB);
             if(runningPCB->getPriority()>-127)
             {
@@ -371,6 +395,10 @@ void QPCBController::step()
         int ticketNum;
         if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
         {
+            if(runningPCB!=NULL)
+            {
+                logProcessFinished(runningPCB->getName());
+            }
             while(holder!=NULL)
             {
                 if(holder->getPriority()<1)
@@ -423,10 +451,12 @@ void QPCBController::insertNewArrivals()
 
         if(holder->getState() == BLOCKED)
         {
+            logStateChange(holder->getName(),holder->getState());
             holder->setState(READY);
         }
         if(holder->getState() == SUSPENDEDBLOCKED)
         {
+            logStateChange(holder->getName(),holder->getState());
             holder->setState(SUSPENDEDREADY);
         }
 
@@ -440,6 +470,7 @@ void QPCBController::setAsRunning(PCB* holder)
     {
         holder->setState(RUNNING);
         runningPCB = holder;
+        logStateChange(holder->getName(),holder->getState());
     }
 }
 
@@ -486,25 +517,49 @@ void QPCBController::changePriorities()
 
 void QPCBController::logProcessEnter(QString processName)
 {
-    QFile logFile;
-    logFile.open(time.toString(),QIODevice::Append);
+    QFile logFile(time.toString());
+    logFile.open(QIODevice::Append | QIODevice::WriteOnly);
     QTextStream toWrite(&logFile);
     toWrite<<processName<<" entered the blocked queue";
-
+    logFile.close();
 }
 
 void QPCBController::logProcessFinished(QString processName)
 {
-    QFile logFile;
-    logFile.open(time.toString(),QIODevice::Append);
+    QFile logFile(time.toString());
+    logFile.open(QIODevice::Append | QIODevice::WriteOnly);
     QTextStream toWrite(&logFile);
     toWrite<<processName<<" finished and terminated";
+    logFile.close();
 }
 
 void QPCBController::logStateChange(QString processName,PCBState state )
 {
-    QFile logFile;
-    logFile.open(time.toString(),QIODevice::Append);
+    QFile logFile(time.toString());
+    logFile.open(QIODevice::Append | QIODevice::WriteOnly);
     QTextStream toWrite(&logFile);
-    toWrite<<processName<<" now has the "<<state<<" state";
+    toWrite<<processName<<" now has the "<<stateToString(state)<<" state";
+    logFile.close();
+}
+
+QString QPCBController::stateToString(PCBState state)
+{
+    switch(state)
+    {
+    case READY:
+        return "READY";
+        break;
+    case BLOCKED:
+        return "BLOCKED";
+        break;
+    case SUSPENDEDBLOCKED:
+        return "SUSPENDEDBLOCKED";
+        break;
+    case SUSPENDEDREADY:
+        return "SUSPENDEDREADY";
+        break;
+    case RUNNING:
+        return "RUNNING";
+        break;
+    }
 }

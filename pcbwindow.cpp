@@ -99,12 +99,13 @@ pcbWindow::~pcbWindow()
 
 void pcbWindow::run()
 {
-    if((control->quantum > 0 && control->currentScheduler==RR || control->currentScheduler==MLFQ) ||
+    if((control->quantum > 0 && (control->currentScheduler==RR || control->currentScheduler==MLFQ)) ||
             (control->currentScheduler!=MLFQ && control->currentScheduler!=RR))
     {
         while(control->readyList.listLength()>0 &&
               control->blockedList.listLength()>0)
         {
+            qDebug()<<"another step executed";
             control->step();
         }
     }
@@ -282,6 +283,7 @@ void pcbWindow::readFile()
 {
     if (fileNameLEdit->text()!="")
     {
+        qDebug()<<fileNameLEdit->text();
         control->readFile(fileNameLEdit->text());
     }
 }

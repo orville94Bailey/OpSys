@@ -62,8 +62,6 @@ private:
     int numOfPCB;
     PCB* runningPCB;
     QTime time;
-    QFile logFile;
-    QTextStream log;
 
     PCB* checkForArrivals();
     void setCurrentQuantum();
@@ -72,6 +70,7 @@ private:
     void logProcessFinished(QString);
     void logStateChange(QString, PCBState state);
     void logProcessEnter(QString);
+    QString stateToString(PCBState);
 
 
 };
