@@ -2,6 +2,8 @@
 #include "ui_qpcbcontroller.h"
 #include <qfile.h>
 #include <qdebug.h>
+#include <qglobal.h>
+#include <QTime>
 
 QPCBController::QPCBController(QWidget *parent) :
     QWidget(parent),
@@ -13,21 +15,18 @@ QPCBController::QPCBController(QWidget *parent) :
     totalTurnaround = 0;
     numOfPCB = 0;
 
+    time = QTime::currentTime();
+    qsrand((uint)time.msec());
+}
 
-    connect(schedulerWindow.SJHButton,SIGNAL(clicked()),this,SLOT(setSchedulerSFJ()));
-    connect(schedulerWindow.FIFO_button,SIGNAL(clicked()),this,SLOT(setSchedulerFIFO()));
-    connect(schedulerWindow.STCF_button,SIGNAL(clicked()),this,SLOT(setSchedulerSTCF()));
-    connect(schedulerWindow.FPPS_button,SIGNAL(clicked()),this,SLOT(setSchedulerFPPS()));
-    connect(schedulerWindow.RR__button,SIGNAL(clicked()),this,SLOT(setSchedulerRR()));
-    connect(schedulerWindow.MLFQ_button,SIGNAL(clicked()),this,SLOT(setSchedulerMLFQ()));
-    connect(schedulerWindow.LS_button,SIGNAL(clicked()),this,SLOT(setSchedulerLS()));
-    connect(schedulerWindow.NONE_button,SIGNAL(clicked()),this,SLOT(setSchedulerNOTSET()));
-    connect(quantumWindow.Accept_button, SIGNAL(clicked()),this,SLOT(defineQuantum()));
-    connect(ticketWindow.Accept_button, SIGNAL(clicked()),this,SLOT(defineTickets()));
+int QPCBController::generateNumber(int low, int high)
+{
+    return qrand() % ((high+1)-low)+low;
 }
 
 void QPCBController::setSchedulerSFJ()
 {
+    qDebug()<<"butt nuts";
     setCurrentScheduler(SJF);
 }
 
@@ -69,6 +68,7 @@ void QPCBController::setSchedulerNOTSET()
 QPCBController::~QPCBController()
 {
     delete ui;
+    logFile.close();
 }
 
 PCB* QPCBController::allocatePCB()
@@ -291,9 +291,10 @@ PCB* QPCBController::checkForArrivals()
     return NULL;
 }
 
-void QPCBController::step(SchedulerType SType)
+void QPCBController::step()
 {
-    switch(SType)
+    PCB* holder;
+    switch(currentScheduler)
     {
     case SJF:
         if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
@@ -362,7 +363,38 @@ void QPCBController::step(SchedulerType SType)
             setAsRunning(readyList.pop());
         }
         break;
-    case LS:
+    case LS://this finds number of tickets, then selects a process with a random number
+            //we use the random number to find the process with the correct ticket number
+            //if priority is negative this makes it positive
+        holder = readyList.firstNode;
+        tickets = 0;
+        int ticketNum;
+        if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
+        {
+            while(holder!=NULL)
+            {
+                if(holder->getPriority()<1)
+                {
+                    holder->setPriority(holder->getPriority()+128);
+                }
+                holder = holder->nextPCB;
+            }
+            holder = readyList.firstNode;
+            while(holder!=NULL)
+            {
+                tickets+=holder->getPriority();
+                holder = holder->nextPCB;
+            }
+            freePCB(runningPCB);
+            ticketNum = generateNumber(0,tickets);
+            holder = readyList.firstNode;
+            while(tickets>0&&holder!=NULL)
+            {
+                ticketNum -=holder->getPriority();
+                holder = holder->nextPCB;
+            }
+            setAsRunning(holder);
+        }
         break;
     case NOTSET:
         qDebug()<<"this isn't supposed to happen, like ever";
@@ -414,67 +446,6 @@ void QPCBController::setAsRunning(PCB* holder)
 void QPCBController::setCurrentScheduler(SchedulerType scheduler)
 {
     currentScheduler = scheduler;
-    switch(scheduler)
-    {
-    case SJF:
-        qDebug()<<"SJF";
-        schedulerWindow.CurScheduler_Label->setText("SJF");
-        break;
-    case FIFO:
-        schedulerWindow.CurScheduler_Label->setText("FIFO");
-        break;
-    case STCF:
-        schedulerWindow.CurScheduler_Label->setText("STCF");
-        break;
-    case FPPS:
-        schedulerWindow.CurScheduler_Label->setText("FPPS");
-        break;
-    case RR:
-        schedulerWindow.CurScheduler_Label->setText("RR");
-        do
-        {
-            setCurrentQuantum();
-        }while(quantum<1);
-        break;
-    case MLFQ:
-        schedulerWindow.CurScheduler_Label->setText("MLFQ");
-        do
-        {
-            setCurrentQuantum();
-        }while(quantum<1);
-        break;
-    case LS:
-        schedulerWindow.CurScheduler_Label->setText("LS");
-        do
-        {
-            setCurrentTickets();
-        }while(tickets<1);
-        break;
-    case NOTSET:
-        schedulerWindow.CurScheduler_Label->setText("");
-        break;
-    }
-    schedulerWindow.update();
-}
-
-void QPCBController::setCurrentQuantum()
-{
-    quantumWindow.show();
-}
-
-void QPCBController::defineQuantum()
-{
-    quantum = quantumWindow.Quantum_SpinBox->value();
-}
-
-void QPCBController::setCurrentTickets()
-{
-    ticketWindow.show();
-}
-
-void QPCBController::defineTickets()
-{
-    tickets = ticketWindow.Ticket_SpinBox->value();
 }
 
 void QPCBController::changePriorities()
@@ -511,4 +482,29 @@ void QPCBController::changePriorities()
             holder = holder->nextPCB;
         }
     }
+}
+
+void QPCBController::logProcessEnter(QString processName)
+{
+    QFile logFile;
+    logFile.open(time.toString(),QIODevice::Append);
+    QTextStream toWrite(&logFile);
+    toWrite<<processName<<" entered the blocked queue";
+
+}
+
+void QPCBController::logProcessFinished(QString processName)
+{
+    QFile logFile;
+    logFile.open(time.toString(),QIODevice::Append);
+    QTextStream toWrite(&logFile);
+    toWrite<<processName<<" finished and terminated";
+}
+
+void QPCBController::logStateChange(QString processName,PCBState state )
+{
+    QFile logFile;
+    logFile.open(time.toString(),QIODevice::Append);
+    QTextStream toWrite(&logFile);
+    toWrite<<processName<<" now has the "<<state<<" state";
 }

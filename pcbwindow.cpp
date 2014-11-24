@@ -11,6 +11,8 @@ pcbWindow::pcbWindow(QWidget *parent) :
 
     control = new QPCBController();
     scheduler = new processSchedulers;
+    ticketWindow = new ticketDefine;
+    quantumWindow = new QuantumDefineWindow;
 
     //button to pointer
     //createButton = ui->createButton;
@@ -52,6 +54,22 @@ pcbWindow::pcbWindow(QWidget *parent) :
     connect(schedulerButton,SIGNAL(clicked()),this,SLOT(showSchedulers()));
     qDebug()<<"before fuckup?";
 
+    connect(scheduler->SJHButton,SIGNAL(clicked()),control,SLOT(setSchedulerSFJ()));
+    connect(scheduler->FIFO_button,SIGNAL(clicked()),control,SLOT(setSchedulerFIFO()));
+    connect(scheduler->STCF_button,SIGNAL(clicked()),control,SLOT(setSchedulerSTCF()));
+    connect(scheduler->FPPS_button,SIGNAL(clicked()),control,SLOT(setSchedulerFPPS()));
+    connect(scheduler->RR__button,SIGNAL(clicked()),control,SLOT(setSchedulerRR()));
+    connect(scheduler->MLFQ_button,SIGNAL(clicked()),control,SLOT(setSchedulerMLFQ()));
+    connect(scheduler->LS_button,SIGNAL(clicked()),control,SLOT(setSchedulerLS()));
+    connect(scheduler->NONE_button,SIGNAL(clicked()),control,SLOT(setSchedulerNOTSET()));
+    connect(quantumWindow->Accept_button, SIGNAL(clicked()),this,SLOT(setQuantum()));
+    connect(ticketWindow->Accept_button, SIGNAL(clicked()),this,SLOT(setTickets()));
+    connect(scheduler->RR__button,SIGNAL(clicked()),quantumWindow,SLOT(show()));
+    connect(scheduler->MLFQ_button,SIGNAL(clicked()),quantumWindow,SLOT(show()));
+    connect(scheduler->LS_button,SIGNAL(clicked()),ticketWindow,SLOT(show()));
+    connect(quantumWindow->Accept_button, SIGNAL(clicked()),quantumWindow,SLOT(hide()));
+    connect(ticketWindow->Accept_button, SIGNAL(clicked()),ticketWindow,SLOT(hide()));
+    connect(ui->Run_button,SIGNAL(clicked()),this,SLOT(run()));
     qDebug()<<"end of pcbWindow constructor";
 }
 
@@ -77,6 +95,31 @@ pcbWindow::~pcbWindow()
     delete showReadyButton;
     delete fileNameLEdit;
     delete reqMemSBox;
+}
+
+void pcbWindow::run()
+{
+    if((control->quantum > 0 && control->currentScheduler==RR || control->currentScheduler==MLFQ) ||
+            (control->currentScheduler!=MLFQ && control->currentScheduler!=RR))
+    {
+        while(control->readyList.listLength()>0 &&
+              control->blockedList.listLength()>0)
+        {
+            control->step();
+        }
+    }
+}
+
+void pcbWindow::setQuantum()
+{
+    control->quantum = quantumWindow->Quantum_SpinBox->value();
+    qDebug()<<control->quantum;
+}
+
+void pcbWindow::setTickets()
+{
+    control->tickets = ticketWindow->Ticket_SpinBox->value();
+    qDebug()<<control->tickets;
 }
 
 void pcbWindow::showPCBList()

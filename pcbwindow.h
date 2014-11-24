@@ -9,6 +9,9 @@
 #include <QSpinBox>
 #include "pcbshower.h"
 #include "processschedulers.h"
+#include "quantumdefinewindow.h"
+#include "ticketdefine.h"
+
 namespace Ui {
 class pcbWindow;
 }
@@ -21,6 +24,8 @@ public:
     explicit pcbWindow(QWidget *parent = 0);
     QPCBController *control;
     processSchedulers *scheduler;
+    QuantumDefineWindow *quantumWindow;
+    ticketDefine *ticketWindow;
     pcbShower showWindow;
     ~pcbWindow();
 
@@ -70,6 +75,9 @@ private slots:
     bool resume();//done
     void readFile();
     void showSchedulers();
+    void setQuantum();
+    void setTickets();
+    void run();
 };
 
 #endif // PCBWINDOW_H

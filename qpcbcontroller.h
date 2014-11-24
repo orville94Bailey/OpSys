@@ -9,6 +9,9 @@
 #include "processschedulers.h"
 #include <QObject>
 #include "quantumdefinewindow.h"
+#include <QTime>
+#include <QFile>
+
 #include "ticketdefine.h"
 
 namespace Ui {
@@ -28,19 +31,21 @@ public:
     bool insertPCB(PCB*nodeToInsert);//done
     void removePCB(PCB*nodeToRemove);//done
     void readFile(QString);
-    void step(SchedulerType);
+    void step();
     void insertNewArrivals();
     void setAsRunning(PCB*);
     PCB *shortestJob();
     PCB *highestPriority();
+    int generateNumber(int low, int high);
+    int quantum;
+    int tickets;
+    SchedulerType currentScheduler;
 
     PCBList readyList,blockedList;
     ~QPCBController();
 
 public slots:
     void setCurrentScheduler(SchedulerType);
-    void defineQuantum();
-    void defineTickets();
     void setSchedulerSFJ();
     void setSchedulerFIFO();
     void setSchedulerSTCF();
@@ -55,18 +60,18 @@ private:
     int systemTime;
     int totalTurnaround;
     int numOfPCB;
-    int quantum;
-    int tickets;
     PCB* runningPCB;
-    SchedulerType currentScheduler;
-    processSchedulers schedulerWindow;
-    QuantumDefineWindow quantumWindow;
-    ticketDefine ticketWindow;
+    QTime time;
+    QFile logFile;
+    QTextStream log;
 
     PCB* checkForArrivals();
     void setCurrentQuantum();
     void setCurrentTickets();
     void changePriorities();
+    void logProcessFinished(QString);
+    void logStateChange(QString, PCBState state);
+    void logProcessEnter(QString);
 
 
 };

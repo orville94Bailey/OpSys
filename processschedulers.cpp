@@ -22,8 +22,55 @@ processSchedulers::processSchedulers(QWidget *parent) :
 
 
     connect(quitButton, SIGNAL(clicked()),this,SLOT(hide()));
-
+    connect(SJHButton,SIGNAL(clicked()),this,SLOT(setTextSJF()));
+    connect(FIFO_button,SIGNAL(clicked()),this,SLOT(setTextFIFO()));
+    connect(STCF_button,SIGNAL(clicked()),this,SLOT(setTextSTCF()));
+    connect(FPPS_button,SIGNAL(clicked()),this,SLOT(setTextFPPS()));
+    connect(RR__button,SIGNAL(clicked()),this,SLOT(setTextRR()));
+    connect(MLFQ_button,SIGNAL(clicked()),this,SLOT(setTextMLFQ()));
+    connect(LS_button,SIGNAL(clicked()),this,SLOT(setTextLS()));
+    connect(NONE_button,SIGNAL(clicked()),this,SLOT(setTextNOTSET()));
     qDebug()<<"end of processSchedulers constructor";
+}
+
+void processSchedulers::setTextSJF()
+{
+    CurScheduler_Label->setText("SJF");
+}
+
+void processSchedulers::setTextFIFO()
+{
+    CurScheduler_Label->setText("FIFO");
+}
+
+void processSchedulers::setTextSTCF()
+{
+    CurScheduler_Label->setText("STCF");
+}
+
+void processSchedulers::setTextFPPS()
+{
+    CurScheduler_Label->setText("FPPS");
+}
+
+void processSchedulers::setTextRR()
+{
+    CurScheduler_Label->setText("RR");
+}
+
+void processSchedulers::setTextMLFQ()
+{
+    CurScheduler_Label->setText("MLFQ");
+}
+
+void processSchedulers::setTextLS()
+{
+    CurScheduler_Label->setText("LS");
+}
+
+void processSchedulers::setTextNOTSET()
+{
+    CurScheduler_Label->setText("");
 }
 
 processSchedulers::~processSchedulers()

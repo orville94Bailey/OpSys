@@ -14,7 +14,14 @@ class processSchedulers : public QWidget
     Q_OBJECT
 
 private slots:
-
+    void setTextSJF();
+    void setTextFIFO();
+    void setTextSTCF();
+    void setTextFPPS();
+    void setTextRR();
+    void setTextMLFQ();
+    void setTextLS();
+    void setTextNOTSET();
 public:
     explicit processSchedulers(QWidget *parent = 0);
     ~processSchedulers();

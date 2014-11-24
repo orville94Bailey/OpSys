@@ -332,6 +332,19 @@
     <string>Schedulers</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="Run_button">
+   <property name="geometry">
+    <rect>
+     <x>302</x>
+     <y>160</y>
+     <width>81</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>RUN</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
