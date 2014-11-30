@@ -301,91 +301,120 @@ void QPCBController::step()
     switch(currentScheduler)
     {
     case SJF:
-        if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
+        qDebug()<<"begining of SJF";
+        if(runningPCB!=NULL)
         {
-            if(runningPCB!=NULL)
+            if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
             {
-                logProcessFinished(runningPCB->getName());
+                if(runningPCB!=NULL)
+                {
+                    logProcessFinished(runningPCB->getName());
+                }
+                freePCB(runningPCB);
+                setAsRunning(shortestJob());
             }
-            freePCB(runningPCB);
-            setAsRunning(shortestJob());
         }
+        qDebug()<<"end of SJF";
         break;
     case FIFO:
-        if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
+        qDebug()<<"begining of FIFO";
+        if(runningPCB!=NULL)
         {
-            if(runningPCB!=NULL)
+            if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
             {
-                logProcessFinished(runningPCB->getName());
+                if(runningPCB!=NULL)
+                {
+                    logProcessFinished(runningPCB->getName());
+                }
+                freePCB(runningPCB);
+                setAsRunning(readyList.pop());
             }
-            freePCB(runningPCB);
-            setAsRunning(readyList.pop());
         }
+        qDebug()<<"end of FIFO";
         break;
     case STCF:
-        if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
+        qDebug()<<"begining of STCF";
+        if(runningPCB!=NULL)
         {
-            if(runningPCB!=NULL)
+            if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
             {
-                logProcessFinished(runningPCB->getName());
+                if(runningPCB!=NULL)
+                {
+                    logProcessFinished(runningPCB->getName());
+                }
+                freePCB(runningPCB);
+                setAsRunning(shortestJob());
             }
-            freePCB(runningPCB);
-            setAsRunning(shortestJob());
         }
+        qDebug()<<"end of STCF";
         break;
     case FPPS:
-        if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
+        qDebug()<<"begining of FPPS";
+        if(runningPCB!=NULL)
         {
-            if(runningPCB!=NULL)
+            if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
             {
-                logProcessFinished(runningPCB->getName());
+                if(runningPCB!=NULL)
+                {
+                    logProcessFinished(runningPCB->getName());
+                }
+                freePCB(runningPCB);
+                setAsRunning(highestPriority());
             }
-            freePCB(runningPCB);
-            setAsRunning(highestPriority());
         }
+        qDebug()<<"end of FPPS";
         break;
     case RR:
-
-        if(runningPCB->getTimeRemaining()==0)
+        qDebug()<<"begining of RR";
+        if(runningPCB!=NULL)
         {
-            logProcessFinished(runningPCB->getName());
-            freePCB(runningPCB);
-            setAsRunning(readyList.pop());
+            if(runningPCB->getTimeRemaining()==0)
+            {
+                logProcessFinished(runningPCB->getName());
+                freePCB(runningPCB);
+                setAsRunning(readyList.pop());
+            }
+            else if(runningPCB==NULL)
+            {
+                setAsRunning(readyList.pop());
+            }
+            else//quantum has run out
+            {
+                runningPCB->setState(READY);
+                logStateChange(runningPCB->getName(),runningPCB->getState());
+                insertPCB(runningPCB);
+                setAsRunning(readyList.pop());
+            }
         }
-        else if(runningPCB==NULL)
-        {
-            setAsRunning(readyList.pop());
-        }
-        else//quantum has run out
-        {
-            runningPCB->setState(READY);
-            logStateChange(runningPCB->getName(),runningPCB->getState());
-            insertPCB(runningPCB);
-            setAsRunning(readyList.pop());
-        }
+        qDebug()<<"end of RR";
         break;
     case MLFQ:
-        if(runningPCB->getTimeRemaining()==0)
+        qDebug()<<"begining of MLFQ";
+        if(runningPCB!=NULL)
         {
-            logProcessFinished(runningPCB->getName());
-            freePCB(runningPCB);
-            setAsRunning(highestPriority());
-        }
-        else if(runningPCB==NULL)
-        {
-            setAsRunning(highestPriority());
-        }
-        else//quantum has run out
-        {
-            runningPCB->setState(READY);
-            logStateChange(runningPCB->getName(),runningPCB->getState());
-            insertPCB(runningPCB);
-            if(runningPCB->getPriority()>-127)
+            if(runningPCB->getTimeRemaining()==0)
             {
-                runningPCB->setPriority(runningPCB->getPriority()-1);
+                logProcessFinished(runningPCB->getName());
+                freePCB(runningPCB);
+                setAsRunning(highestPriority());
             }
-            setAsRunning(readyList.pop());
+            else if(runningPCB==NULL)
+            {
+                setAsRunning(highestPriority());
+            }
+            else//quantum has run out
+            {
+                runningPCB->setState(READY);
+                logStateChange(runningPCB->getName(),runningPCB->getState());
+                insertPCB(runningPCB);
+                if(runningPCB->getPriority()>-127)
+                {
+                    runningPCB->setPriority(runningPCB->getPriority()-1);
+                }
+                setAsRunning(readyList.pop());
+            }
         }
+        qDebug()<<"end of MLFQ";
         break;
     case LS://this finds number of tickets, then selects a process with a random number
             //we use the random number to find the process with the correct ticket number
@@ -393,36 +422,41 @@ void QPCBController::step()
         holder = readyList.firstNode;
         tickets = 0;
         int ticketNum;
-        if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
+        qDebug()<<"begining of LS";
+        if(runningPCB!=NULL)
         {
-            if(runningPCB!=NULL)
+            if(runningPCB->getTimeRemaining()<=0 || runningPCB==NULL)
             {
-                logProcessFinished(runningPCB->getName());
-            }
-            while(holder!=NULL)
-            {
-                if(holder->getPriority()<1)
+                if(runningPCB!=NULL)
                 {
-                    holder->setPriority(holder->getPriority()+128);
+                    logProcessFinished(runningPCB->getName());
                 }
-                holder = holder->nextPCB;
+                while(holder!=NULL)
+                {
+                    if(holder->getPriority()<1)
+                    {
+                        holder->setPriority(holder->getPriority()+128);
+                    }
+                    holder = holder->nextPCB;
+                }
+                holder = readyList.firstNode;
+                while(holder!=NULL)
+                {
+                    tickets+=holder->getPriority();
+                    holder = holder->nextPCB;
+                }
+                freePCB(runningPCB);
+                ticketNum = generateNumber(0,tickets);
+                holder = readyList.firstNode;
+                while(tickets>0&&holder!=NULL)
+                {
+                    ticketNum -=holder->getPriority();
+                    holder = holder->nextPCB;
+                }
+                setAsRunning(holder);
             }
-            holder = readyList.firstNode;
-            while(holder!=NULL)
-            {
-                tickets+=holder->getPriority();
-                holder = holder->nextPCB;
-            }
-            freePCB(runningPCB);
-            ticketNum = generateNumber(0,tickets);
-            holder = readyList.firstNode;
-            while(tickets>0&&holder!=NULL)
-            {
-                ticketNum -=holder->getPriority();
-                holder = holder->nextPCB;
-            }
-            setAsRunning(holder);
         }
+        qDebug()<<"end of LS";
         break;
     case NOTSET:
         qDebug()<<"this isn't supposed to happen, like ever";

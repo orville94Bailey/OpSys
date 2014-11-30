@@ -99,11 +99,22 @@ pcbWindow::~pcbWindow()
 
 void pcbWindow::run()
 {
-    if((control->quantum > 0 && (control->currentScheduler==RR || control->currentScheduler==MLFQ)) ||
-            (control->currentScheduler!=MLFQ && control->currentScheduler!=RR))
+    qDebug()<<"made it inside pcbwindow::run";
+    if((control->currentScheduler==RR || control->currentScheduler==MLFQ) && control->quantum>0)
     {
-        while(control->readyList.listLength()>0 &&
+        qDebug()<<"inside first if statement";
+        while(control->readyList.listLength()>0 ||
               control->blockedList.listLength()>0)
+        {
+            qDebug()<<"another step executed";
+            control->step();
+        }
+    }
+    if(control->currentScheduler!=MLFQ || control->currentScheduler!=RR)
+    {
+        qDebug()<<"inside second if statement";
+        while(control->readyList.firstNode!=NULL ||
+              control->blockedList.firstNode!=NULL)
         {
             qDebug()<<"another step executed";
             control->step();
